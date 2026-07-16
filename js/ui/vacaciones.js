@@ -535,7 +535,7 @@ function initSolicitudSearch() {
   const isGerente = store.hasRole('gerente');
   const authEmpId = store.state.authUser?.empleado_id;
 
-  if (!isAdmin && !isGerente) {
+  if (!isAdmin) {
     const emp = store.getEmpleadoById(authEmpId);
     if (emp && searchContainer) searchContainer.style.display = 'none';
     if (emp) selectSolicitudEmpleado(emp.id);
@@ -654,6 +654,24 @@ function updateSolicitudPreview() {
   }
 
   document.getElementById('vac-modal-error').textContent = '';
+  const errorEl = document.getElementById('vac-modal-error');
+  const warnEl = document.getElementById('vac-modal-warn');
+  if (warnEl) warnEl.style.display = 'none';
+
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+  const fechaInicioDate = new Date(fechaInicio + 'T00:00:00');
+  const diffDias = Math.ceil((fechaInicioDate - hoy) / (1000 * 60 * 60 * 24));
+  if (diffDias < 15) {
+    if (warnEl) {
+      warnEl.textContent = 'La solicitud se esta realizando con menos de 15 dias de anticipacion, lo cual dificulta los procesos administrativos y de nomina que conlleva su vacacion.';
+      warnEl.style.display = 'block';
+    } else {
+      errorEl.textContent = '\u26A0 La solicitud se esta realizando con menos de 15 dias de anticipacion, lo cual dificulta los procesos administrativos y de nomina que conlleva su vacacion.';
+      errorEl.style.color = 'var(--color-warning)';
+    }
+  }
+
   const diasHabiles = calcularDiasHabiles(fechaInicio, fechaFin);
   const saldo = emp.vacaciones_saldo || 0;
 
@@ -696,6 +714,9 @@ function openVacacionModal() {
   document.getElementById('vac-fecha-inicio').value = '';
   document.getElementById('vac-fecha-fin').value = '';
   document.getElementById('vac-modal-error').textContent = '';
+  document.getElementById('vac-modal-error').style.color = '';
+  const warnEl = document.getElementById('vac-modal-warn');
+  if (warnEl) { warnEl.textContent = ''; warnEl.style.display = 'none'; }
   document.getElementById('vac-modal-save').disabled = true;
   document.getElementById('vac-solicitud-results').style.display = 'none';
   modal.style.display = 'flex';

@@ -333,7 +333,7 @@ const API_ROUTES = {
   async 'POST /api/vacaciones'(req, res) {
     const body = await getBody(req);
     body.empresa_id = req.user.empresa_id || body.empresa_id;
-    const allowed = ['empleado_id', 'empresa_id', 'fecha_solicitud', 'fecha_inicio', 'fecha_fin', 'dias_solicitados', 'dias_disponibles', 'estatus', 'aprobado_por'];
+    const allowed = ['empleado_id', 'empresa_id', 'fecha_solicitud', 'fecha_inicio', 'fecha_fin', 'dias_solicitados', 'dias_disponibles', 'dias_correspondientes', 'periodo', 'estatus', 'aprobado_por'];
     const safeBody = {};
     for (const k of allowed) { if (body[k] !== undefined) safeBody[k] = body[k]; }
     const { data, error } = await supabase.from('vacaciones').insert(safeBody).select().single();
