@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sistema-rrhh-v19';
+const CACHE_NAME = 'sistema-rrhh-v20';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -59,17 +59,13 @@ self.addEventListener('fetch', (event) => {
         });
       })
     );
-  } else if (request.url.endsWith('.js')) {
+  } else {
     event.respondWith(
       fetch(request).then(response => {
         const clone = response.clone();
         caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
         return response;
       }).catch(() => caches.match(request))
-    );
-  } else {
-    event.respondWith(
-      caches.match(request).then(cached => cached || fetch(request))
     );
   }
 });
