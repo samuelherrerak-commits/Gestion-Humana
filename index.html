@@ -33,19 +33,27 @@
         <p class="auth-card__subtitle">Gestión Integral de Recursos Humanos</p>
       </div>
 
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab auth-tab--active" id="tab-empleado">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Empleado
+        </button>
+        <button type="button" class="auth-tab" id="tab-admin">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Administrador
+        </button>
+      </div>
+
       <form id="login-form" class="auth-form">
-        <h2 class="auth-form__title">Iniciar Sesión</h2>
         <div class="auth-form__group">
           <label class="auth-form__label">Cédula de Identidad</label>
           <input type="text" id="login-cedula" class="auth-form__input" placeholder="Ej: V-12345678" required>
         </div>
         <div class="auth-form__error" id="login-error"></div>
         <button type="submit" class="auth-form__btn">Entrar</button>
-        <p class="auth-form__switch"><a href="#" id="show-admin-login">Iniciar sesión con email</a></p>
       </form>
 
       <form id="admin-login-form" class="auth-form" style="display:none">
-        <h2 class="auth-form__title">Acceso Administrador</h2>
         <div class="auth-form__group">
           <label class="auth-form__label">Email</label>
           <input type="email" id="admin-email" class="auth-form__input" placeholder="correo@empresa.com" required>
@@ -56,7 +64,6 @@
         </div>
         <div class="auth-form__error" id="admin-error"></div>
         <button type="submit" class="auth-form__btn">Entrar</button>
-        <p class="auth-form__switch"><a href="#" id="show-cedula-login">Volver al inicio de sesión</a></p>
       </form>
     </div>
   </div>

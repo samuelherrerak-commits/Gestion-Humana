@@ -149,17 +149,17 @@ const API_ROUTES = {
     const { cedula } = await getBody(req);
     if (!cedula) return sendJson(res, 400, { error: 'Cédula requerida' });
     const cleanCedula = String(cedula).trim();
-    const { data: emp } = await supabase.from('empleados').select('*').eq('cedula', cleanCedula).maybeSingle();
-    if (!emp) return sendJson(res, 401, { error: 'Cédula no registrada en el sistema' });
-    const nivel = emp.nivel_jerarquico || 'empleado';
-    const rol = (nivel === 'gerente_general' || nivel === 'encargado_departamento') ? 'gerente' : 'empleado';
+    const { data: user } = await supabase.from('usuarios').select('*').eq('cedula', cleanCedula).maybeSingle();
+    if (!user) return sendJson(res, 401, { error: 'Cédula no registrada en el sistema' });
+    const { data: emp } = await supabase.from('empleados').select('id, email, empresa_id, apellido').eq('cedula', cleanCedula).maybeSingle();
     const token = signToken({
-      id: emp.id, cedula: emp.cedula, nombre: emp.nombre, apellido: emp.apellido,
-      email: emp.email || null, empresa_id: emp.empresa_id, rol, empleado_id: emp.id
+      id: user.id, cedula: user.cedula, nombre: user.nombre,
+      email: emp?.email || null, empresa_id: emp?.empresa_id || user.empresa_id,
+      rol: user.rol, empleado_id: emp?.id || null, apellido: emp?.apellido || null
     });
     sendJson(res, 200, {
       token,
-      user: { id: emp.id, cedula: emp.cedula, nombre: emp.nombre, apellido: emp.apellido, email: emp.email || null, empresa_id: emp.empresa_id, rol, empleado_id: emp.id }
+      user: { id: user.id, cedula: user.cedula, nombre: user.nombre, apellido: emp?.apellido || null, email: emp?.email || null, empresa_id: emp?.empresa_id || user.empresa_id, rol: user.rol, empleado_id: emp?.id || null }
     });
   },
 

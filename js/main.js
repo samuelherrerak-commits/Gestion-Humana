@@ -28,6 +28,8 @@ async function startApp() {
 document.addEventListener('DOMContentLoaded', () => {
   window.__doLogout = logout;
 
+  onAuthenticated(startApp);
+
   if (checkAuth()) {
     startApp();
   } else {

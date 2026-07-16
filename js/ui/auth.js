@@ -6,6 +6,8 @@ const loginForm = document.getElementById('login-form');
 const adminForm = document.getElementById('admin-login-form');
 const loginError = document.getElementById('login-error');
 const adminError = document.getElementById('admin-error');
+const tabEmpleado = document.getElementById('tab-empleado');
+const tabAdmin = document.getElementById('tab-admin');
 
 let onAuthCallback = null;
 
@@ -25,25 +27,27 @@ export function logout() {
   api.setToken(null);
   localStorage.removeItem('sistema-rrhh-state');
   overlay.style.display = 'flex';
-  loginForm.style.display = 'block';
-  adminForm.style.display = 'none';
+  showEmpleadoTab();
   loginError.textContent = '';
   adminError.textContent = '';
 }
 
-document.getElementById('show-admin-login')?.addEventListener('click', (e) => {
-  e.preventDefault();
+function showEmpleadoTab() {
+  loginForm.style.display = 'block';
+  adminForm.style.display = 'none';
+  tabEmpleado.classList.add('auth-tab--active');
+  tabAdmin.classList.remove('auth-tab--active');
+}
+
+function showAdminTab() {
   loginForm.style.display = 'none';
   adminForm.style.display = 'block';
-  loginError.textContent = '';
-});
+  tabAdmin.classList.add('auth-tab--active');
+  tabEmpleado.classList.remove('auth-tab--active');
+}
 
-document.getElementById('show-cedula-login')?.addEventListener('click', (e) => {
-  e.preventDefault();
-  adminForm.style.display = 'none';
-  loginForm.style.display = 'block';
-  adminError.textContent = '';
-});
+tabEmpleado?.addEventListener('click', showEmpleadoTab);
+tabAdmin?.addEventListener('click', showAdminTab);
 
 loginForm.addEventListener('submit', async (e) => {
   e.preventDefault();
