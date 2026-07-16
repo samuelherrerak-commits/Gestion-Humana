@@ -1,4 +1,7 @@
-require('dotenv').config();
+require('dotenv').config({ path: require('path').join(__dirname, '.env'), override: true });
+console.log('[Env] SUPABASE_URL:', process.env.SUPABASE_URL ? 'OK' : 'MISSING');
+console.log('[Env] SUPABASE_ANON_KEY:', process.env.SUPABASE_ANON_KEY ? 'OK' : 'MISSING');
+console.log('[Env] JWT_SECRET:', process.env.JWT_SECRET ? 'OK' : 'MISSING');
 const http = require('http');
 const https = require('https');
 const fs = require('fs');
