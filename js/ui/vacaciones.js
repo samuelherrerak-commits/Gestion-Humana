@@ -518,6 +518,10 @@ export function initVacacionesModal() {
   });
   document.getElementById('vac-modal-save')?.addEventListener('click', saveVacacion);
 
+  document.getElementById('vac-fecha-inicio')?.addEventListener('change', updateSolicitudPreview);
+  document.getElementById('vac-fecha-fin')?.addEventListener('change', updateSolicitudPreview);
+  document.getElementById('vac-sol-dias-disfrutar')?.addEventListener('input', updateSaldoDespues);
+
   initSolicitudSearch();
 
   pubsub.on(EVENT.VACATIONS_UPDATED, () => {
@@ -535,14 +539,14 @@ function initSolicitudSearch() {
   const isGerente = store.hasRole('gerente');
   const authEmpId = store.state.authUser?.empleado_id;
 
-  if (!isAdmin) {
-    const emp = store.getEmpleadoById(authEmpId);
-    if (emp && searchContainer) searchContainer.style.display = 'none';
-    if (emp) selectSolicitudEmpleado(emp.id);
-    return;
-  }
+  const isEmpleado = !isAdmin && !isGerente;
 
   const equipoIds = isGerente ? store.getEmpleadosByGerente(authEmpId).map(e => e.id) : [];
+
+  if (isEmpleado) {
+    const emp = store.getEmpleadoById(authEmpId);
+    if (emp) selectSolicitudEmpleado(emp.id);
+  }
 
   input.addEventListener('input', () => {
     const q = input.value.trim().toLowerCase();
@@ -554,7 +558,9 @@ function initSolicitudSearch() {
     let empleados = (Array.isArray(store.state.empleados) ? store.state.empleados : [])
       .filter(e => e.estatus === 'activo');
 
-    if (isGerente) {
+    if (isEmpleado) {
+      empleados = empleados.filter(e => e.id === authEmpId);
+    } else if (isGerente) {
       empleados = empleados.filter(e => equipoIds.includes(e.id));
     }
 
@@ -625,10 +631,6 @@ function selectSolicitudEmpleado(empId) {
   document.getElementById('vac-fecha-fin').value = '';
   document.getElementById('vac-sol-dias-disfrutar').value = '';
   document.getElementById('vac-modal-save').disabled = true;
-
-  document.getElementById('vac-fecha-inicio').addEventListener('change', updateSolicitudPreview);
-  document.getElementById('vac-fecha-fin').addEventListener('change', updateSolicitudPreview);
-  document.getElementById('vac-sol-dias-disfrutar').addEventListener('input', updateSaldoDespues);
 }
 
 function updateSolicitudPreview() {
@@ -654,7 +656,7 @@ function updateSolicitudPreview() {
   }
 
   document.getElementById('vac-modal-error').textContent = '';
-  const errorEl = document.getElementById('vac-modal-error');
+  document.getElementById('vac-modal-error').style.color = '';
   const warnEl = document.getElementById('vac-modal-warn');
   if (warnEl) warnEl.style.display = 'none';
 
@@ -720,6 +722,11 @@ function openVacacionModal() {
   document.getElementById('vac-modal-save').disabled = true;
   document.getElementById('vac-solicitud-results').style.display = 'none';
   modal.style.display = 'flex';
+
+  if (!store.hasRole('admin') && !store.hasRole('gerente')) {
+    const emp = store.getEmpleadoById(store.state.authUser?.empleado_id);
+    if (emp) selectSolicitudEmpleado(emp.id);
+  }
 }
 
 function closeVacacionModal() {
@@ -751,10 +758,10 @@ async function saveVacacion() {
     return;
   }
 
-  const diasHabiles = calcularDiasHabiles(fechaInicio, fechaFin);
   const anios = calcularAniosServicio(emp.fecha_ingreso);
   const diasCorrespondientes = Math.min(15 + Math.max(0, anios - 1), 30);
-  const periodo = `${new Date().getFullYear() - 1}-${new Date().getFullYear().toString().slice(-2)}`;
+  const fechaInicioYear = new Date(fechaInicio).getFullYear();
+  const periodo = `${fechaInicioYear - 1}-${fechaInicioYear.toString().slice(-2)}`;
 
   const btn = document.getElementById('vac-modal-save');
   btn.disabled = true;
@@ -764,6 +771,7 @@ async function saveVacacion() {
       fecha_inicio: fechaInicio,
       fecha_fin: fechaFin,
       dias_solicitados: diasDisfrutar,
+      dias_disponibles: emp.vacaciones_saldo || 0,
       dias_correspondientes: diasCorrespondientes,
       periodo: periodo,
       estatus: 'pendiente_jefe'
@@ -796,8 +804,6 @@ function openUsoModal(empleadoId) {
   document.getElementById('vac-uso-preview').style.display = 'none';
   document.getElementById('vac-uso-error').textContent = '';
   document.getElementById('vac-uso-modal').style.display = 'flex';
-
-  document.getElementById('vac-uso-dias').addEventListener('input', updateUsoPreview);
 }
 
 function closeUsoModal() {
@@ -908,6 +914,7 @@ export function initUsoModal() {
   document.getElementById('vac-uso-close')?.addEventListener('click', closeUsoModal);
   document.getElementById('vac-uso-cancel')?.addEventListener('click', closeUsoModal);
   document.getElementById('vac-uso-save')?.addEventListener('click', applyUsoFIFO);
+  document.getElementById('vac-uso-dias')?.addEventListener('input', updateUsoPreview);
   document.getElementById('vac-uso-modal')?.addEventListener('click', (e) => {
     if (e.target === e.currentTarget) closeUsoModal();
   });

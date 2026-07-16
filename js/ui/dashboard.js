@@ -24,7 +24,7 @@ function renderAdminDashboard() {
   const empleados = Array.isArray(store.state.empleados) ? store.state.empleados : [];
   const activos = empleados.filter(e => e.estatus === 'activo');
   const inactivos = empleados.filter(e => e.estatus === 'inactivo');
-  const vacacionesPendientes = Array.isArray(store.state.vacaciones) ? store.state.vacaciones.filter(v => v.estatus === 'pendiente') : [];
+  const vacacionesPendientes = Array.isArray(store.state.vacaciones) ? store.state.vacaciones.filter(v => v.estatus === 'pendiente_jefe') : [];
   const constanciasEmitidas = Array.isArray(store.state.constancias) ? store.state.constancias : [];
 
   const totalDiasPendientes = activos.reduce((sum, e) => sum + (e.vacaciones_saldo || 0), 0);
