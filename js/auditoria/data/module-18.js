@@ -1,0 +1,152 @@
+export default {
+  id: 18,
+  codigo: 'M18',
+  title: 'Tercerización e Intermediación Laboral',
+  description: 'Verificación del cumplimiento de las normas sobre tercerización prohibida, responsabilidad solidaria de contratistas e intermediarios.',
+  icon: '🔗',
+  activaModulos: false,
+  categoria: [
+    {
+      id: '18.1',
+      title: 'Prohibición de Tercerización',
+      description: 'Actividades que no pueden ser tercerizadas y responsabilidad del contratante',
+      items: [
+        {
+          codigo: 'TZ-001',
+          pregunta: '¿La empresa terceriza actividades inherentes al proceso productivo o sustantivas de la empresa?',
+          descripcion: 'La LOTTT prohíbe la tercerización de actividades propias del proceso productivo principal. Lo que no puede tercerizarse es la actividad medular del negocio.',
+          fundamentoLegal: { articulo: 'Art. 47', ley: 'LOTTT' },
+          nivelRiesgo: 'CRÍTICO',
+          responsable: 'Gerencia General / Legal',
+          periodicidad: 'Anual',
+          evidenciaRequerida: ['Estructura organizativa', 'Contratos con terceros', 'Análisis de procesos'],
+          formatoPermitido: ['pdf', 'xlsx'],
+          tipoEvidencia: ['PDF', 'Excel'],
+          diasAlerta: 0,
+          status: null, evidencia: null, evidenciaStatus: null, observaciones: '',
+          fechaVencimiento: null, fechaRevision: null, auditorResponsable: '',
+          hallazgo: { descripcion: '', nivelRiesgoHallazgo: null, recomendacion: '', responsableAccion: '', fechaCompromiso: null, costoEstimado: null, prioridad: null, estadoPlan: 'abierto' }
+        },
+        {
+          codigo: 'TZ-002',
+          pregunta: '¿Las contratistas y subcontratistas están legalmente constituidas y solventes en materia laboral?',
+          descripcion: 'Las empresas contratistas deben estar legalmente constituidas, registradas en el RNET y solventes con IVSS, INCES y FAOV. La contratante debe verificar estos requisitos.',
+          fundamentoLegal: { articulo: 'Arts. 47, 48, 49', ley: 'LOTTT' },
+          nivelRiesgo: 'CRÍTICO',
+          responsable: 'Gerencia de Compras / Legal',
+          periodicidad: 'Por cada contratación',
+          evidenciaRequerida: ['Registro de contratistas', 'Solvencias laborales', 'RIF y documentos legales'],
+          formatoPermitido: ['pdf'],
+          tipoEvidencia: ['PDF'],
+          diasAlerta: 30,
+          status: null, evidencia: null, evidenciaStatus: null, observaciones: '',
+          fechaVencimiento: null, fechaRevision: null, auditorResponsable: '',
+          hallazgo: { descripcion: '', nivelRiesgoHallazgo: null, recomendacion: '', responsableAccion: '', fechaCompromiso: null, costoEstimado: null, prioridad: null, estadoPlan: 'abierto' }
+        },
+        {
+          codigo: 'TZ-003',
+          pregunta: '¿Los contratos con proveedores y contratistas incluyen cláusulas de responsabilidad solidaria en materia laboral?',
+          descripcion: 'Los contratos deben incluir cláusulas que establezcan la responsabilidad solidaria del contratante por las obligaciones laborales de la contratista y subcontratista.',
+          fundamentoLegal: { articulo: 'Arts. 48, 49', ley: 'LOTTT' },
+          nivelRiesgo: 'CRÍTICO',
+          responsable: 'Gerencia Legal',
+          periodicidad: 'Por cada contratación',
+          evidenciaRequerida: ['Contratos con cláusulas laborales', 'Modelo de contrato', 'Registro de contratistas'],
+          formatoPermitido: ['pdf'],
+          tipoEvidencia: ['PDF'],
+          diasAlerta: 0,
+          status: null, evidencia: null, evidenciaStatus: null, observaciones: '',
+          fechaVencimiento: null, fechaRevision: null, auditorResponsable: '',
+          hallazgo: { descripcion: '', nivelRiesgoHallazgo: null, recomendacion: '', responsableAccion: '', fechaCompromiso: null, costoEstimado: null, prioridad: null, estadoPlan: 'abierto' }
+        },
+        {
+          codigo: 'TZ-004',
+          pregunta: '¿La empresa garantiza igualdad de condiciones laborales a los trabajadores de contratistas que laboran en sus instalaciones?',
+          descripcion: 'Los trabajadores de contratistas que presten servicios en las instalaciones de la contratante deben gozar de condiciones de trabajo dignas y seguridad industrial adecuadas.',
+          fundamentoLegal: { articulo: 'Arts. 47, 49', ley: 'LOTTT' },
+          nivelRiesgo: 'ALTO',
+          responsable: 'Gerencia de Operaciones / RRHH',
+          periodicidad: 'Anual',
+          evidenciaRequerida: ['Condiciones de áreas de trabajo', 'Controles de acceso', 'Verificaciones in situ'],
+          formatoPermitido: ['pdf'],
+          tipoEvidencia: ['PDF'],
+          diasAlerta: 0,
+          status: null, evidencia: null, evidenciaStatus: null, observaciones: '',
+          fechaVencimiento: null, fechaRevision: null, auditorResponsable: '',
+          hallazgo: { descripcion: '', nivelRiesgoHallazgo: null, recomendacion: '', responsableAccion: '', fechaCompromiso: null, costoEstimado: null, prioridad: null, estadoPlan: 'abierto' }
+        }
+      ]
+    },
+    {
+      id: '18.2',
+      title: 'Intermediación Laboral',
+      description: 'Uso de intermediarios, cooperativas y asociaciones para la prestación de servicios',
+      items: [
+        {
+          codigo: 'TZ-005',
+          pregunta: '¿La empresa utiliza intermediarios laborales para evadir la relación de trabajo directa?',
+          descripcion: 'La ley prohíbe la simulación o interposición de personas para evadir las obligaciones laborales. El intermediario y el beneficiario son solidariamente responsables.',
+          fundamentoLegal: { articulo: 'Arts. 50, 51, 52', ley: 'LOTTT' },
+          nivelRiesgo: 'CRÍTICO',
+          responsable: 'Gerencia Legal / RRHH',
+          periodicidad: 'Anual',
+          evidenciaRequerida: ['Listado de personal', 'Contratos de servicios', 'Estructura de nómina'],
+          formatoPermitido: ['pdf', 'xlsx'],
+          tipoEvidencia: ['PDF', 'Excel'],
+          diasAlerta: 0,
+          status: null, evidencia: null, evidenciaStatus: null, observaciones: '',
+          fechaVencimiento: null, fechaRevision: null, auditorResponsable: '',
+          hallazgo: { descripcion: '', nivelRiesgoHallazgo: null, recomendacion: '', responsableAccion: '', fechaCompromiso: null, costoEstimado: null, prioridad: null, estadoPlan: 'abierto' }
+        },
+        {
+          codigo: 'TZ-006',
+          pregunta: '¿La empresa contrata servicios con cooperativas de trabajo asociado?',
+          descripcion: 'La LOTTT regula la contratación de cooperativas. Si existe relación de dependencia disfrazada de cooperativa, se considera relación laboral directa.',
+          fundamentoLegal: { articulo: 'Arts. 53, 54, 55', ley: 'LOTTT' },
+          nivelRiesgo: 'CRÍTICO',
+          responsable: 'Gerencia Legal / RRHH',
+          periodicidad: 'Anual',
+          evidenciaRequerida: ['Contratos con cooperativas', 'Registro de cooperativas', 'Análisis de subordinación'],
+          formatoPermitido: ['pdf'],
+          tipoEvidencia: ['PDF'],
+          diasAlerta: 0,
+          status: null, evidencia: null, evidenciaStatus: null, observaciones: '',
+          fechaVencimiento: null, fechaRevision: null, auditorResponsable: '',
+          hallazgo: { descripcion: '', nivelRiesgoHallazgo: null, recomendacion: '', responsableAccion: '', fechaCompromiso: null, costoEstimado: null, prioridad: null, estadoPlan: 'abierto' }
+        },
+        {
+          codigo: 'TZ-007',
+          pregunta: '¿Los contratos de servicios profesionales o de consultoría cumplen con la naturaleza de la relación civil y no encubren una relación laboral?',
+          descripcion: 'Los contratos por honorarios profesionales deben reflejar autonomía e independencia. Si existe subordinación, horario y exclusividad, se desnaturaliza la relación civil.',
+          fundamentoLegal: { articulo: 'Arts. 35, 36, 39', ley: 'LOTTT' },
+          nivelRiesgo: 'ALTO',
+          responsable: 'Gerencia Legal / RRHH',
+          periodicidad: 'Anual',
+          evidenciaRequerida: ['Contratos de servicios', 'Análisis de puesto', 'Registro de contratistas'],
+          formatoPermitido: ['pdf'],
+          tipoEvidencia: ['PDF'],
+          diasAlerta: 0,
+          status: null, evidencia: null, evidenciaStatus: null, observaciones: '',
+          fechaVencimiento: null, fechaRevision: null, auditorResponsable: '',
+          hallazgo: { descripcion: '', nivelRiesgoHallazgo: null, recomendacion: '', responsableAccion: '', fechaCompromiso: null, costoEstimado: null, prioridad: null, estadoPlan: 'abierto' }
+        },
+        {
+          codigo: 'TZ-008',
+          pregunta: '¿Existe un registro actualizado de todos los contratistas, proveedores de personal y sus trabajadores asignados?',
+          descripcion: 'La empresa debe mantener un registro de todos los terceros que prestan servicios, con información de sus trabajadores, solvencias y contratos.',
+          fundamentoLegal: { articulo: 'Arts. 47, 48', ley: 'LOTTT' },
+          nivelRiesgo: 'ALTO',
+          responsable: 'Gerencia de Compras / Administración',
+          periodicidad: 'Trimestral',
+          evidenciaRequerida: ['Registro de contratistas', 'Matriz de proveedores', 'Reporte de personal externo'],
+          formatoPermitido: ['pdf', 'xlsx'],
+          tipoEvidencia: ['PDF', 'Excel'],
+          diasAlerta: 15,
+          status: null, evidencia: null, evidenciaStatus: null, observaciones: '',
+          fechaVencimiento: null, fechaRevision: null, auditorResponsable: '',
+          hallazgo: { descripcion: '', nivelRiesgoHallazgo: null, recomendacion: '', responsableAccion: '', fechaCompromiso: null, costoEstimado: null, prioridad: null, estadoPlan: 'abierto' }
+        }
+      ]
+    }
+  ]
+};

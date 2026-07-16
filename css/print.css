@@ -1,0 +1,12 @@
+/* ════════════════════════════════════════════════════════════
+   PRINT STYLES
+   ════════════════════════════════════════════════════════════ */
+
+@media print {
+  .sidebar, .topbar, .topbar__actions, .btn, #menu-toggle { display: none !important; }
+  .main-content { margin-left: 0 !important; }
+  .view-container { padding: 0 !important; }
+  body { background: #fff; font-size: 10pt; }
+  .kpi-card { break-inside: avoid; }
+  .modal-overlay { display: none !important; }
+}

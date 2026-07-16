@@ -1,0 +1,22 @@
+{
+  "name": "Sistema RRHH - Gestión Integral",
+  "short_name": "Sistema RRHH",
+  "description": "Sistema de Gestión Integral de Recursos Humanos",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0F1B2D",
+  "theme_color": "#0F1B2D",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "js/assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "js/assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

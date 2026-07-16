@@ -1,0 +1,152 @@
+export default {
+  id: 17,
+  codigo: 'M17',
+  title: 'Capacitación y Formación Profesional',
+  description: 'Verificación del cumplimiento del derecho a la capacitación, formación profesional continua y contratos de aprendizaje.',
+  icon: '🎓',
+  activaModulos: false,
+  categoria: [
+    {
+      id: '17.1',
+      title: 'Derecho a la Capacitación Continua',
+      description: 'Garantías del trabajador para acceder a formación y capacitación',
+      items: [
+        {
+          codigo: 'CF-001',
+          pregunta: '¿La empresa garantiza el derecho a la capacitación y formación profesional continua de todos los trabajadores?',
+          descripcion: 'Todo trabajador tiene derecho a la capacitación y formación profesional como parte del proceso social de trabajo. La empresa debe promover y facilitar este derecho.',
+          fundamentoLegal: { articulo: 'Art. 88', ley: 'LOTTT' },
+          nivelRiesgo: 'ALTO',
+          responsable: 'Gerencia de RRHH',
+          periodicidad: 'Anual',
+          evidenciaRequerida: ['Política de capacitación', 'Programa anual de formación', 'Registro de actividades'],
+          formatoPermitido: ['pdf'],
+          tipoEvidencia: ['PDF'],
+          diasAlerta: 30,
+          status: null, evidencia: null, evidenciaStatus: null, observaciones: '',
+          fechaVencimiento: null, fechaRevision: null, auditorResponsable: '',
+          hallazgo: { descripcion: '', nivelRiesgoHallazgo: null, recomendacion: '', responsableAccion: '', fechaCompromiso: null, costoEstimado: null, prioridad: null, estadoPlan: 'abierto' }
+        },
+        {
+          codigo: 'CF-002',
+          pregunta: '¿Existe un plan anual de capacitación documentado y aprobado por la gerencia?',
+          descripcion: 'La empresa debe elaborar un plan anual de capacitación que contemple las necesidades formativas de los trabajadores, los objetivos y los recursos destinados.',
+          fundamentoLegal: { articulo: 'Art. 88', ley: 'LOTTT' },
+          nivelRiesgo: 'ALTO',
+          responsable: 'Gerencia de RRHH',
+          periodicidad: 'Anual',
+          evidenciaRequerida: ['Plan anual de capacitación', 'Presupuesto de formación', 'Cronograma de actividades'],
+          formatoPermitido: ['pdf', 'xlsx'],
+          tipoEvidencia: ['PDF', 'Excel'],
+          diasAlerta: 30,
+          status: null, evidencia: null, evidenciaStatus: null, observaciones: '',
+          fechaVencimiento: null, fechaRevision: null, auditorResponsable: '',
+          hallazgo: { descripcion: '', nivelRiesgoHallazgo: null, recomendacion: '', responsableAccion: '', fechaCompromiso: null, costoEstimado: null, prioridad: null, estadoPlan: 'abierto' }
+        },
+        {
+          codigo: 'CF-003',
+          pregunta: '¿Se conceden permisos para estudios y formación profesional sin menoscabo del salario?',
+          descripcion: 'Los trabajadores tienen derecho a permisos remunerados para asistir a actividades de formación profesional y educativa relacionadas con su desarrollo laboral.',
+          fundamentoLegal: { articulo: 'Art. 88', ley: 'LOTTT' },
+          nivelRiesgo: 'ALTO',
+          responsable: 'Departamento de RRHH',
+          periodicidad: 'Permanente',
+          evidenciaRequerida: ['Registro de permisos', 'Solicitudes de formación', 'Comunicaciones internas'],
+          formatoPermitido: ['pdf', 'xlsx'],
+          tipoEvidencia: ['PDF', 'Excel'],
+          diasAlerta: 0,
+          status: null, evidencia: null, evidenciaStatus: null, observaciones: '',
+          fechaVencimiento: null, fechaRevision: null, auditorResponsable: '',
+          hallazgo: { descripcion: '', nivelRiesgoHallazgo: null, recomendacion: '', responsableAccion: '', fechaCompromiso: null, costoEstimado: null, prioridad: null, estadoPlan: 'abierto' }
+        },
+        {
+          codigo: 'CF-004',
+          pregunta: '¿Se lleva un registro individual de las capacitaciones recibidas por cada trabajador?',
+          descripcion: 'La empresa debe mantener un historial de formación por cada trabajador que documente los cursos, talleres y actividades de capacitación realizadas.',
+          fundamentoLegal: { articulo: 'Art. 88', ley: 'LOTTT' },
+          nivelRiesgo: 'MEDIO',
+          responsable: 'Departamento de RRHH',
+          periodicidad: 'Permanente',
+          evidenciaRequerida: ['Registro individual de capacitación', 'Expediente del trabajador', 'Certificados de formación'],
+          formatoPermitido: ['pdf', 'xlsx'],
+          tipoEvidencia: ['PDF', 'Excel'],
+          diasAlerta: 0,
+          status: null, evidencia: null, evidenciaStatus: null, observaciones: '',
+          fechaVencimiento: null, fechaRevision: null, auditorResponsable: '',
+          hallazgo: { descripcion: '', nivelRiesgoHallazgo: null, recomendacion: '', responsableAccion: '', fechaCompromiso: null, costoEstimado: null, prioridad: null, estadoPlan: 'abierto' }
+        }
+      ]
+    },
+    {
+      id: '17.2',
+      title: 'Contratos de Aprendizaje',
+      description: 'Registro y cumplimiento de los contratos de aprendizaje ante el INCES',
+      items: [
+        {
+          codigo: 'CF-005',
+          pregunta: '¿La empresa tiene contratos de aprendizaje registrados ante el INCES?',
+          descripcion: 'Las empresas pueden suscribir contratos de aprendizaje con jóvenes trabajadores para combinar la formación teórica con la práctica laboral, con registro ante el INCES.',
+          fundamentoLegal: { articulo: 'Arts. 22, 23', ley: 'Ley del INCES' },
+          nivelRiesgo: 'ALTO',
+          responsable: 'Gerencia de RRHH',
+          periodicidad: 'Anual',
+          evidenciaRequerida: ['Contratos de aprendizaje registrados', 'Constancia INCES', 'Listado de aprendices'],
+          formatoPermitido: ['pdf', 'xlsx'],
+          tipoEvidencia: ['PDF', 'Excel'],
+          diasAlerta: 30,
+          status: null, evidencia: null, evidenciaStatus: null, observaciones: '',
+          fechaVencimiento: null, fechaRevision: null, auditorResponsable: '',
+          hallazgo: { descripcion: '', nivelRiesgoHallazgo: null, recomendacion: '', responsableAccion: '', fechaCompromiso: null, costoEstimado: null, prioridad: null, estadoPlan: 'abierto' }
+        },
+        {
+          codigo: 'CF-006',
+          pregunta: '¿Los contratos de aprendizaje cumplen con los requisitos legales de forma, duración y contenido?',
+          descripcion: 'El contrato de aprendizaje debe contener: identificación de las partes, duración (máximo 2 años), jornada, programa de formación, salario y obligaciones.',
+          fundamentoLegal: { articulo: 'Arts. 22, 23, 24', ley: 'Ley del INCES' },
+          nivelRiesgo: 'ALTO',
+          responsable: 'Gerencia de RRHH / Legal',
+          periodicidad: 'Anual',
+          evidenciaRequerida: ['Contratos de aprendizaje', 'Checklist de requisitos', 'Programa de formación'],
+          formatoPermitido: ['pdf'],
+          tipoEvidencia: ['PDF'],
+          diasAlerta: 30,
+          status: null, evidencia: null, evidenciaStatus: null, observaciones: '',
+          fechaVencimiento: null, fechaRevision: null, auditorResponsable: '',
+          hallazgo: { descripcion: '', nivelRiesgoHallazgo: null, recomendacion: '', responsableAccion: '', fechaCompromiso: null, costoEstimado: null, prioridad: null, estadoPlan: 'abierto' }
+        },
+        {
+          codigo: 'CF-007',
+          pregunta: '¿La empresa tiene programas de formación dual o pasantías con instituciones educativas?',
+          descripcion: 'La empresa puede suscribir convenios de formación dual con instituciones educativas y técnicas para facilitar la inserción laboral de estudiantes y pasantes.',
+          fundamentoLegal: { articulo: 'Arts. 88, 89', ley: 'LOTTT' },
+          nivelRiesgo: 'MEDIO',
+          responsable: 'Gerencia de RRHH',
+          periodicidad: 'Anual',
+          evidenciaRequerida: ['Convenios educativos', 'Programas de pasantías', 'Registro de estudiantes'],
+          formatoPermitido: ['pdf'],
+          tipoEvidencia: ['PDF'],
+          diasAlerta: 60,
+          status: null, evidencia: null, evidenciaStatus: null, observaciones: '',
+          fechaVencimiento: null, fechaRevision: null, auditorResponsable: '',
+          hallazgo: { descripcion: '', nivelRiesgoHallazgo: null, recomendacion: '', responsableAccion: '', fechaCompromiso: null, costoEstimado: null, prioridad: null, estadoPlan: 'abierto' }
+        },
+        {
+          codigo: 'CF-008',
+          pregunta: '¿Se registran los participantes en los programas de formación del INCES?',
+          descripcion: 'Los trabajadores que participan en programas de capacitación auspiciados por el INCES deben estar registrados en el sistema del instituto.',
+          fundamentoLegal: { articulo: 'Arts. 14, 15', ley: 'Ley del INCES' },
+          nivelRiesgo: 'MEDIO',
+          responsable: 'Departamento de RRHH',
+          periodicidad: 'Trimestral',
+          evidenciaRequerida: ['Registro INCES de participantes', 'Reporte de formación', 'Constancia de registro'],
+          formatoPermitido: ['pdf', 'xlsx'],
+          tipoEvidencia: ['PDF', 'Excel'],
+          diasAlerta: 30,
+          status: null, evidencia: null, evidenciaStatus: null, observaciones: '',
+          fechaVencimiento: null, fechaRevision: null, auditorResponsable: '',
+          hallazgo: { descripcion: '', nivelRiesgoHallazgo: null, recomendacion: '', responsableAccion: '', fechaCompromiso: null, costoEstimado: null, prioridad: null, estadoPlan: 'abierto' }
+        }
+      ]
+    }
+  ]
+};

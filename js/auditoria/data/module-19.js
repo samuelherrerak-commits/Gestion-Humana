@@ -1,0 +1,152 @@
+export default {
+  id: 19,
+  codigo: 'M19',
+  title: 'Reglamento Interno y Normas de Convivencia',
+  description: 'Verificación de la existencia, contenido y aprobación del Reglamento Interno de Trabajo y las normas de convivencia laboral.',
+  icon: '📋',
+  activaModulos: false,
+  categoria: [
+    {
+      id: '19.1',
+      title: 'Reglamento Interno de Trabajo',
+      description: 'Elaboración, contenido y aprobación del Reglamento Interno',
+      items: [
+        {
+          codigo: 'RI-001',
+          pregunta: '¿La empresa tiene un Reglamento Interno de Trabajo debidamente aprobado por la Inspectoría del Trabajo?',
+          descripcion: 'Toda empresa con más de 10 trabajadores debe tener un Reglamento Interno de Trabajo aprobado por la Inspectoría del Trabajo de su jurisdicción.',
+          fundamentoLegal: { articulo: 'Arts. 68, 18, 19', ley: 'LOTTT / RLOT' },
+          nivelRiesgo: 'CRÍTICO',
+          responsable: 'Gerencia de RRHH / Legal',
+          periodicidad: 'Anual',
+          evidenciaRequerida: ['Reglamento Interno aprobado', 'Resolución Inspectoría', 'Registro de aprobación'],
+          formatoPermitido: ['pdf'],
+          tipoEvidencia: ['PDF'],
+          diasAlerta: 30,
+          status: null, evidencia: null, evidenciaStatus: null, observaciones: '',
+          fechaVencimiento: null, fechaRevision: null, auditorResponsable: '',
+          hallazgo: { descripcion: '', nivelRiesgoHallazgo: null, recomendacion: '', responsableAccion: '', fechaCompromiso: null, costoEstimado: null, prioridad: null, estadoPlan: 'abierto' }
+        },
+        {
+          codigo: 'RI-002',
+          pregunta: '¿El Reglamento Interno contiene todas las materias exigidas por la ley?',
+          descripcion: 'Debe incluir: horarios, jornadas, descansos, vacaciones, permisos, sanciones, higiene y seguridad, procedimientos disciplinarios, comités de trabajo.',
+          fundamentoLegal: { articulo: 'Arts. 68, 69', ley: 'LOTTT / RLOT' },
+          nivelRiesgo: 'CRÍTICO',
+          responsable: 'Gerencia Legal / RRHH',
+          periodicidad: 'Anual',
+          evidenciaRequerida: ['Reglamento Interno vigente', 'Checklist de contenidos mínimos'],
+          formatoPermitido: ['pdf'],
+          tipoEvidencia: ['PDF'],
+          diasAlerta: 30,
+          status: null, evidencia: null, evidenciaStatus: null, observaciones: '',
+          fechaVencimiento: null, fechaRevision: null, auditorResponsable: '',
+          hallazgo: { descripcion: '', nivelRiesgoHallazgo: null, recomendacion: '', responsableAccion: '', fechaCompromiso: null, costoEstimado: null, prioridad: null, estadoPlan: 'abierto' }
+        },
+        {
+          codigo: 'RI-003',
+          pregunta: '¿El Reglamento Interno está publicado en lugares visibles y accesibles para todos los trabajadores?',
+          descripcion: 'El Reglamento debe ser divulgado mediante publicación en lugares visibles de la empresa y debe ser entregado a cada trabajador al momento de su ingreso.',
+          fundamentoLegal: { articulo: 'Arts. 68, 70', ley: 'LOTTT' },
+          nivelRiesgo: 'ALTO',
+          responsable: 'Departamento de RRHH',
+          periodicidad: 'Anual',
+          evidenciaRequerida: ['Registro de entrega y divulgación', 'Fotografías de publicación', 'Acuses de recibo firmados'],
+          formatoPermitido: ['pdf', 'jpg', 'png'],
+          tipoEvidencia: ['PDF', 'Imagen'],
+          diasAlerta: 30,
+          status: null, evidencia: null, evidenciaStatus: null, observaciones: '',
+          fechaVencimiento: null, fechaRevision: null, auditorResponsable: '',
+          hallazgo: { descripcion: '', nivelRiesgoHallazgo: null, recomendacion: '', responsableAccion: '', fechaCompromiso: null, costoEstimado: null, prioridad: null, estadoPlan: 'abierto' }
+        },
+        {
+          codigo: 'RI-004',
+          pregunta: '¿El Reglamento Interno se actualiza periódicamente y se mantiene vigente?',
+          descripcion: 'El Reglamento debe revisarse y actualizarse al menos cada dos años o cuando haya cambios significativos en las condiciones de trabajo o en la legislación.',
+          fundamentoLegal: { articulo: 'Arts. 68, 69', ley: 'LOTTT' },
+          nivelRiesgo: 'ALTO',
+          responsable: 'Gerencia Legal / RRHH',
+          periodicidad: 'Bienal',
+          evidenciaRequerida: ['Historial de versiones', 'Fecha de última revisión', 'Registro de actualizaciones'],
+          formatoPermitido: ['pdf'],
+          tipoEvidencia: ['PDF'],
+          diasAlerta: 60,
+          status: null, evidencia: null, evidenciaStatus: null, observaciones: '',
+          fechaVencimiento: null, fechaRevision: null, auditorResponsable: '',
+          hallazgo: { descripcion: '', nivelRiesgoHallazgo: null, recomendacion: '', responsableAccion: '', fechaCompromiso: null, costoEstimado: null, prioridad: null, estadoPlan: 'abierto' }
+        }
+      ]
+    },
+    {
+      id: '19.2',
+      title: 'Sanciones y Régimen Disciplinario',
+      description: 'Procedimiento disciplinario, sanciones y garantías del trabajador',
+      items: [
+        {
+          codigo: 'RI-005',
+          pregunta: '¿El Reglamento Interno establece un procedimiento disciplinario claro y respetuoso del derecho a la defensa?',
+          descripcion: 'Las sanciones deben estar tipificadas en el Reglamento y su aplicación debe seguir un procedimiento que garantice el derecho a la defensa del trabajador.',
+          fundamentoLegal: { articulo: 'Arts. 68, 81, 82', ley: 'LOTTT' },
+          nivelRiesgo: 'ALTO',
+          responsable: 'Gerencia Legal / RRHH',
+          periodicidad: 'Anual',
+          evidenciaRequerida: ['Reglamento Interno', 'Expedientes disciplinarios', 'Registro de sanciones'],
+          formatoPermitido: ['pdf'],
+          tipoEvidencia: ['PDF'],
+          diasAlerta: 0,
+          status: null, evidencia: null, evidenciaStatus: null, observaciones: '',
+          fechaVencimiento: null, fechaRevision: null, auditorResponsable: '',
+          hallazgo: { descripcion: '', nivelRiesgoHallazgo: null, recomendacion: '', responsableAccion: '', fechaCompromiso: null, costoEstimado: null, prioridad: null, estadoPlan: 'abierto' }
+        },
+        {
+          codigo: 'RI-006',
+          pregunta: '¿Las sanciones disciplinarias se aplican por escrito y se notifican formalmente al trabajador?',
+          descripcion: 'Toda sanción debe constar por escrito, ser notificada al trabajador con indicación de la falta cometida, la sanción aplicada y su fundamento legal.',
+          fundamentoLegal: { articulo: 'Arts. 81, 82', ley: 'LOTTT' },
+          nivelRiesgo: 'ALTO',
+          responsable: 'Departamento de RRHH',
+          periodicidad: 'Por cada sanción',
+          evidenciaRequerida: ['Cartas de sanción', 'Notificaciones firmadas', 'Expediente disciplinario'],
+          formatoPermitido: ['pdf', 'jpg', 'png'],
+          tipoEvidencia: ['PDF', 'Imagen'],
+          diasAlerta: 0,
+          status: null, evidencia: null, evidenciaStatus: null, observaciones: '',
+          fechaVencimiento: null, fechaRevision: null, auditorResponsable: '',
+          hallazgo: { descripcion: '', nivelRiesgoHallazgo: null, recomendacion: '', responsableAccion: '', fechaCompromiso: null, costoEstimado: null, prioridad: null, estadoPlan: 'abierto' }
+        },
+        {
+          codigo: 'RI-007',
+          pregunta: '¿Se tipifica y sanciona el acoso laboral u hostigamiento en el Reglamento Interno?',
+          descripcion: 'El Reglamento debe contener disposiciones que prohíban y sancionen el acoso laboral, hostigamiento y cualquier forma de violencia en el trabajo.',
+          fundamentoLegal: { articulo: 'Arts. 56, 57, 58', ley: 'LOTTT / LOPCYMAT' },
+          nivelRiesgo: 'CRÍTICO',
+          responsable: 'Gerencia de RRHH / Legal',
+          periodicidad: 'Anual',
+          evidenciaRequerida: ['Reglamento Interno', 'Política contra acoso', 'Registro de denuncias'],
+          formatoPermitido: ['pdf'],
+          tipoEvidencia: ['PDF'],
+          diasAlerta: 0,
+          status: null, evidencia: null, evidenciaStatus: null, observaciones: '',
+          fechaVencimiento: null, fechaRevision: null, auditorResponsable: '',
+          hallazgo: { descripcion: '', nivelRiesgoHallazgo: null, recomendacion: '', responsableAccion: '', fechaCompromiso: null, costoEstimado: null, prioridad: null, estadoPlan: 'abierto' }
+        },
+        {
+          codigo: 'RI-008',
+          pregunta: '¿Existe un registro actualizado de todas las sanciones disciplinarias aplicadas?',
+          descripcion: 'La empresa debe llevar un registro cronológico de las sanciones aplicadas, con identificación del trabajador, falta cometida, sanción y fecha.',
+          fundamentoLegal: { articulo: 'Arts. 68, 82', ley: 'LOTTT' },
+          nivelRiesgo: 'MEDIO',
+          responsable: 'Departamento de RRHH',
+          periodicidad: 'Permanente',
+          evidenciaRequerida: ['Registro de sanciones', 'Expedientes disciplinarios', 'Base de datos'],
+          formatoPermitido: ['pdf', 'xlsx'],
+          tipoEvidencia: ['PDF', 'Excel'],
+          diasAlerta: 0,
+          status: null, evidencia: null, evidenciaStatus: null, observaciones: '',
+          fechaVencimiento: null, fechaRevision: null, auditorResponsable: '',
+          hallazgo: { descripcion: '', nivelRiesgoHallazgo: null, recomendacion: '', responsableAccion: '', fechaCompromiso: null, costoEstimado: null, prioridad: null, estadoPlan: 'abierto' }
+        }
+      ]
+    }
+  ]
+};

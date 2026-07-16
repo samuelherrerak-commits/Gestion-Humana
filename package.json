@@ -1,0 +1,27 @@
+{
+  "name": "sistema-rrhh",
+  "version": "1.0.0",
+  "description": "Sistema RRHH - Gestión Integral",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "rrhh",
+    "recursos-humanos",
+    "pwa"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.110.1",
+    "bcryptjs": "^3.0.3",
+    "busboy": "^1.6.0",
+    "dotenv": "^17.4.2",
+    "jsonwebtoken": "^9.0.3",
+    "jspdf": "^2.5.1",
+    "xlsx": "^0.18.5"
+  }
+}
