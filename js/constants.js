@@ -77,19 +77,31 @@ export const ESTATUS_VACACION_COLORS = {
 export const TIPOS_CONSTANCIA = {
   TRABAJO: 'trabajo',
   SUELDO: 'sueldo',
-  RECOMENDACION: 'recomendacion'
+  RECOMENDACION: 'recomendacion',
+  VACACIONES: 'vacaciones'
 };
 
 export const TIPOS_CONSTANCIA_LABELS = {
   [TIPOS_CONSTANCIA.TRABAJO]: 'Constancia de Trabajo',
   [TIPOS_CONSTANCIA.SUELDO]: 'Constancia de Sueldo',
-  [TIPOS_CONSTANCIA.RECOMENDACION]: 'Carta de Recomendación'
+  [TIPOS_CONSTANCIA.RECOMENDACION]: 'Carta de Recomendación',
+  [TIPOS_CONSTANCIA.VACACIONES]: 'Constancia de Aprobación de Vacaciones'
 };
 
 export const CONSTANCIA_TYPES_BY_ROLE = {
   admin: [TIPOS_CONSTANCIA.TRABAJO, TIPOS_CONSTANCIA.SUELDO, TIPOS_CONSTANCIA.RECOMENDACION],
   gerente: [TIPOS_CONSTANCIA.TRABAJO],
   empleado: [TIPOS_CONSTANCIA.TRABAJO]
+};
+
+export const QUINCENAS = {
+  PRIMERA: '1ra',
+  SEGUNDA: '2da'
+};
+
+export const QUINCENA_LABELS = {
+  [QUINCENAS.PRIMERA]: '1ra quincena (1-15)',
+  [QUINCENAS.SEGUNDA]: '2da quincena (16-fin)'
 };
 
 export const DIAS_VACACIONES_BASE = 15;

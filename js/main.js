@@ -16,6 +16,7 @@ async function startApp() {
   }
 
   overlay.style.display = 'none';
+  document.body.classList.add(`role-${store.state.authUser.rol || 'empleado'}`);
   initApp();
 
   const savedView = store.state.ui.currentView || 'dashboard';

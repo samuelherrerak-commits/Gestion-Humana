@@ -198,7 +198,7 @@ const API_ROUTES = {
   },
 
   async 'PATCH /api/empleados/:id'(req, res, match) {
-    if (!requireRole('admin')(req, res)) return;
+    if (!requireRole('admin', 'gerente')(req, res)) return;
     const body = await getBody(req);
     const { data, error } = await supabase.from('empleados').update(body).eq('id', match[1]).select().single();
     if (error) return sendJson(res, 500, { error: error.message });
@@ -364,7 +364,7 @@ const API_ROUTES = {
   },
 
   async 'POST /api/vacaciones-historial/batch'(req, res) {
-    if (!requireRole('admin')(req, res)) return;
+    if (!requireRole('admin', 'gerente')(req, res)) return;
     const body = await getBody(req);
     if (!Array.isArray(body.updates)) return sendJson(res, 400, { error: 'updates array required' });
     const results = [];
@@ -381,12 +381,9 @@ const API_ROUTES = {
     if (!requireRole('admin', 'gerente')(req, res)) return;
     const body = await getBody(req);
 
-    if (body.estatus === 'aprobado_jefe') {
+    if (body.estatus === 'aprobado') {
       body.aprobado_por_jefe = req.user.id;
       body.fecha_aprobacion_jefe = new Date().toISOString();
-    } else if (body.estatus === 'aprobado') {
-      body.aprobado_por_rrhh = req.user.id;
-      body.fecha_aprobacion_rrhh = new Date().toISOString();
     }
 
     const { data, error } = await supabase.from('vacaciones').update(body).eq('id', match[1]).select().single();

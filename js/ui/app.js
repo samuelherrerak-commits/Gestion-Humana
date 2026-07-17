@@ -41,7 +41,6 @@ function applyRoleVisibility() {
 
   hideIf('[data-view="empleados"]', !isAdmin);
   hideIf('[data-view="expedientes"]', !isAdmin);
-  hideIf('[data-view="constancias"]', !isAdmin);
 
   const orgLinks = document.querySelector('.sidebar__group-label[data-group="organizacion"]')?.closest('.sidebar__group')?.querySelectorAll('.sidebar__link');
   if (orgLinks) orgLinks.forEach(l => { if (!isAdmin) l.style.display = 'none'; });

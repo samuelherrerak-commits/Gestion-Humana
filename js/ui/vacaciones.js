@@ -1,8 +1,9 @@
 import { store } from '../engine/store.js';
 import { pubsub } from '../utils/pubsub.js';
-import { EVENT, ESTATUS_VACACION, ESTATUS_VACACION_LABELS, ESTATUS_VACACION_COLORS } from '../constants.js';
+import { EVENT, ESTATUS_VACACION, ESTATUS_VACACION_LABELS, ESTATUS_VACACION_COLORS, QUINCENAS, QUINCENA_LABELS } from '../constants.js';
 import { formatDate, calcularAntiguedad } from '../utils/format.js';
 import { calcularDiasHabiles, calcularAniosServicio } from '../engine/vacaciones-calc.js';
+import { generarConstanciaPDF } from './constancia-pdf.js';
 
 let activeTab = 'saldo';
 let selectedEmpleadoId = null;
@@ -148,7 +149,7 @@ function renderEstadoCuenta(empleadoId) {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   TAB: SOLICITUDES (Con cadena de aprobación)
+   TAB: SOLICITUDES
    ══════════════════════════════════════════════════════════════ */
 
 function renderSolicitudesTab() {
@@ -181,18 +182,27 @@ function renderSolicitudesTab() {
   }
   if (emptyState) emptyState.style.display = 'none';
 
+  const isAdmin = store.hasRole('admin');
+
   container.innerHTML = vacaciones.map(v => {
     const emp = store.getEmpleadoById(v.empleado_id);
     const diasPago = v.dias_correspondientes || v.dias_solicitados || 0;
     const acciones = getVacacionesAcciones(v);
+    const condicionBadge = v.condicion
+      ? `<span class="badge badge--${v.condicion === 'pago' ? 'success' : 'info'}" style="font-size:var(--font-size-xs)">${v.condicion === 'pago' ? 'Pago' : 'Disfrute'}</span>`
+      : '\u2014';
+    const quincenaCell = v.quincena_pago || '\u2014';
+    const nominaCell = v.numero_nomina || '\u2014';
     return `
     <tr data-id="${v.id}">
       <td class="cell-primary">${emp ? emp.nombre + ' ' + emp.apellido : '\u2014'}</td>
       <td>${v.periodo || formatDate(v.fecha_inicio) + ' \u2014 ' + formatDate(v.fecha_fin)}</td>
       <td>${v.dias_solicitados} d\u00EDas</td>
       <td>${diasPago} d\u00EDas</td>
+      <td>${condicionBadge}</td>
       <td><span class="badge badge--${ESTATUS_VACACION_COLORS[v.estatus] || 'info'}">${ESTATUS_VACACION_LABELS[v.estatus] || v.estatus}</span></td>
       <td>${formatDate(v.fecha_solicitud)}</td>
+      ${isAdmin ? `<td>${quincenaCell}</td><td>${nominaCell}</td>` : ''}
       <td>${acciones}</td>
     </tr>`;
   }).join('');
@@ -200,14 +210,7 @@ function renderSolicitudesTab() {
   container.querySelectorAll('.btn-vac-approve-jefe').forEach(btn => {
     btn.addEventListener('click', async (e) => {
       e.stopPropagation();
-      await store.updateVacacion(parseInt(btn.dataset.id), { estatus: 'aprobado_jefe' });
-    });
-  });
-
-  container.querySelectorAll('.btn-vac-confirmar-pago').forEach(btn => {
-    btn.addEventListener('click', async (e) => {
-      e.stopPropagation();
-      await confirmarPago(parseInt(btn.dataset.id));
+      await aprobarVacacion(parseInt(btn.dataset.id));
     });
   });
 
@@ -215,6 +218,62 @@ function renderSolicitudesTab() {
     btn.addEventListener('click', async (e) => {
       e.stopPropagation();
       await store.updateVacacion(parseInt(btn.dataset.id), { estatus: 'rechazado' });
+    });
+  });
+
+  container.querySelectorAll('.btn-vac-asignar-quincena').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openQuincenaModal(parseInt(btn.dataset.id));
+    });
+  });
+
+  container.querySelectorAll('.btn-vac-registrar-pago').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openPagoModal(parseInt(btn.dataset.id));
+    });
+  });
+
+  container.querySelectorAll('.btn-vac-download-const').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const vId = parseInt(btn.dataset.id);
+      const vac = (Array.isArray(store.state.vacaciones) ? store.state.vacaciones : []).find(v => v.id === vId);
+      if (!vac) return;
+      const emp = store.getEmpleadoById(vac.empleado_id);
+      if (!emp) return;
+      let constancia = (Array.isArray(store.state.constancias) ? store.state.constancias : []).find(c =>
+        c.empleado_id === vac.empleado_id && c.tipo === 'vacaciones' &&
+        c.fecha_inicio === vac.fecha_inicio && c.fecha_fin === vac.fecha_fin
+      );
+      if (!constancia) {
+        try {
+          await crearConstanciaVacaciones(vac, emp, vac.condicion || 'pago');
+          constancia = (Array.isArray(store.state.constancias) ? store.state.constancias : []).find(c =>
+            c.empleado_id === vac.empleado_id && c.tipo === 'vacaciones' &&
+            c.fecha_inicio === vac.fecha_inicio && c.fecha_fin === vac.fecha_fin
+          );
+        } catch (err) {
+          console.error('[Vacaciones] Error generando constancia on-the-fly:', err);
+          alert('Error generando la constancia. Verifique que la migración SQL fue ejecutada.');
+          return;
+        }
+      }
+      if (!constancia) {
+        alert('No se pudo generar la constancia. Ejecute la migración SQL en Supabase.');
+        return;
+      }
+      const historial = store.getHistorialByEmpleado(vac.empleado_id);
+      const periodosPendientes = historial.filter(h => h.pendientes > 0).map(h => ({ periodo: h.periodo, dias: h.pendientes }));
+      generarConstanciaPDF(constancia, emp, {
+        fecha_inicio: constancia.fecha_inicio,
+        fecha_fin: constancia.fecha_fin,
+        dias_solicitados: constancia.dias_solicitados,
+        condicion: constancia.condicion,
+        periodosPendientes,
+        totalPendientes: periodosPendientes.reduce((s, p) => s + p.dias, 0)
+      });
     });
   });
 
@@ -233,20 +292,29 @@ function getVacacionesAcciones(v) {
   switch (v.estatus) {
     case 'pendiente_jefe':
       if (isAdmin) return `
-        <button class="btn btn--success btn--sm btn-vac-approve-jefe" data-id="${v.id}">Aprobar Jefe</button>
+        <button class="btn btn--success btn--sm btn-vac-approve-jefe" data-id="${v.id}">Aprobar</button>
         <button class="btn btn--danger btn--sm btn-vac-reject" data-id="${v.id}">Rechazar</button>`;
       if (isGerente && esDelEquipo && !esMio) return `
-        <button class="btn btn--success btn--sm btn-vac-approve-jefe" data-id="${v.id}">Aprobar Jefe</button>
+        <button class="btn btn--success btn--sm btn-vac-approve-jefe" data-id="${v.id}">Aprobar</button>
         <button class="btn btn--danger btn--sm btn-vac-reject" data-id="${v.id}">Rechazar</button>`;
       return '<span style="font-size:var(--font-size-xs);color:var(--color-text-muted)">Pendiente</span>';
-    case 'aprobado_jefe':
-      return isAdmin ? `
-        <button class="btn btn--primary btn--sm btn-vac-confirmar-pago" data-id="${v.id}">Confirmar Pago</button>
-        <button class="btn btn--danger btn--sm btn-vac-reject" data-id="${v.id}">Rechazar</button>` : '<span style="font-size:var(--font-size-xs);color:var(--color-text-muted)">Aprobado jefe</span>';
-    case 'aprobado_rrhh':
-      return `<span style="font-size:var(--font-size-xs);color:var(--color-text-muted)">Esperando confirmaci\u00F3n RRHH</span>`;
     case 'aprobado':
-      return `<span style="font-size:var(--font-size-xs);color:var(--color-success)">Completado</span>`;
+      if (isAdmin && v.condicion === 'pago' && !v.quincena_pago) {
+        return `<button class="btn btn--primary btn--sm btn-vac-asignar-quincena" data-id="${v.id}">Asignar Quincena</button>
+                <button class="btn btn--ghost btn--sm btn-vac-download-const" data-id="${v.id}" style="margin-top:2px">Descargar Constancia</button>`;
+      }
+      if (isAdmin && v.quincena_pago && !v.numero_nomina) {
+        return `<button class="btn btn--primary btn--sm btn-vac-registrar-pago" data-id="${v.id}">Registrar Pago</button>
+                <button class="btn btn--ghost btn--sm btn-vac-download-const" data-id="${v.id}" style="margin-top:2px">Descargar Constancia</button>
+                <span style="font-size:var(--font-size-xs);color:var(--color-text-secondary);display:block;margin-top:2px">Q: ${v.quincena_pago}</span>`;
+      }
+      if (v.numero_nomina) {
+        return `<span style="font-size:var(--font-size-xs);color:var(--color-success);font-weight:var(--font-weight-semibold)">&#10003; Pagado</span>
+                <button class="btn btn--ghost btn--sm btn-vac-download-const" data-id="${v.id}" style="margin-top:2px">Descargar Constancia</button>
+                <span style="font-size:var(--font-size-xs);color:var(--color-text-secondary);display:block">N\u00B0 ${v.numero_nomina}</span>`;
+      }
+      return `<button class="btn btn--ghost btn--sm btn-vac-download-const" data-id="${v.id}">Descargar Constancia</button>
+              <span style="font-size:var(--font-size-xs);color:var(--color-success);display:block;margin-top:2px">Aprobado</span>`;
     case 'rechazado':
       return `<span style="font-size:var(--font-size-xs);color:var(--color-danger)">Rechazado</span>`;
     default:
@@ -254,22 +322,37 @@ function getVacacionesAcciones(v) {
   }
 }
 
-async function confirmarPago(vacacionId) {
+/* ══════════════════════════════════════════════════════════════
+   APROBACIÓN + FIFO + CONSTANCIA
+   ══════════════════════════════════════════════════════════════ */
+
+export async function aprobarVacacion(vacacionId) {
   const vac = (Array.isArray(store.state.vacaciones) ? store.state.vacaciones : []).find(v => v.id === vacacionId);
   if (!vac) return;
 
   try {
-    await store.updateVacacion(vacacionId, { estatus: 'aprobado' });
+    const condicion = store.determineVacacionCondition(vac.empleado_id, vac.periodo);
+
+    await store.updateVacacion(vacacionId, { estatus: 'aprobado', condicion });
 
     const historial = store.getHistorialByEmpleado(vac.empleado_id)
-      .find(h => h.periodo === vac.periodo);
-    if (historial) {
-      const nuevosDisfrutados = (historial.disfrutados || 0) + (vac.dias_solicitados || 0);
-      const nuevosPendientes = (historial.correspondiente || 0) - nuevosDisfrutados;
-      await store.updateHistorialRecord(historial.id, {
-        disfrutados: nuevosDisfrutados,
-        pendientes: Math.max(0, nuevosPendientes)
+      .filter(h => h.pendientes > 0)
+      .sort((a, b) => a.periodo.localeCompare(b.periodo));
+
+    let restante = vac.dias_solicitados || 0;
+    const updates = [];
+    for (const h of historial) {
+      if (restante <= 0) break;
+      const descuento = Math.min(restante, h.pendientes);
+      updates.push({
+        id: h.id,
+        disfrutados: (h.disfrutados || 0) + descuento,
+        pendientes: h.correspondiente - ((h.disfrutados || 0) + descuento)
       });
+      restante -= descuento;
+    }
+    if (updates.length > 0) {
+      await store.batchUpdateHistorial(updates);
     }
 
     const emp = store.getEmpleadoById(vac.empleado_id);
@@ -278,10 +361,139 @@ async function confirmarPago(vacacionId) {
       const nuevoDisfrutadas = (emp.vacaciones_disfrutadas || 0) + (vac.dias_solicitados || 0);
       await store.updateEmpleadoSaldo(emp.id, Math.max(0, nuevoSaldo), emp.vacaciones_correspondientes, nuevoDisfrutadas);
     }
+
+    await generarConstanciaVacaciones(vac, emp, condicion);
   } catch (err) {
-    console.error('[Vacaciones] Error confirmando pago:', err);
+    console.error('[Vacaciones] Error aprobando:', err);
   }
 }
+
+async function crearConstanciaVacaciones(vac, emp, condicion) {
+  const constanciaData = {
+    empleado_id: vac.empleado_id,
+    tipo: 'vacaciones',
+    contenido: `Constancia de vacaciones - ${emp.nombre} ${emp.apellido} - ${vac.periodo}`,
+    fecha_inicio: vac.fecha_inicio,
+    fecha_fin: vac.fecha_fin,
+    dias_solicitados: vac.dias_solicitados,
+    condicion: condicion,
+    fecha_emision: new Date().toISOString().split('T')[0]
+  };
+  return await store.addConstancia(constanciaData);
+}
+
+async function generarConstanciaVacaciones(vac, emp, condicion) {
+  try {
+    const created = await crearConstanciaVacaciones(vac, emp, condicion);
+
+    const historial = store.getHistorialByEmpleado(vac.empleado_id);
+    const periodosPendientes = historial
+      .filter(h => h.pendientes > 0)
+      .map(h => ({ periodo: h.periodo, dias: h.pendientes }));
+    const totalPendientes = periodosPendientes.reduce((s, p) => s + p.dias, 0);
+
+    generarConstanciaPDF(created, emp, {
+      fecha_inicio: vac.fecha_inicio,
+      fecha_fin: vac.fecha_fin,
+      dias_solicitados: vac.dias_solicitados,
+      condicion: condicion,
+      periodosPendientes,
+      totalPendientes
+    });
+  } catch (err) {
+    console.error('[Vacaciones] Error generando constancia:', err.message || err);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MODAL: ASIGNAR QUINCENA
+   ══════════════════════════════════════════════════════════════ */
+
+let quincenaModalVacId = null;
+
+function openQuincenaModal(vacacionId) {
+  const vac = (Array.isArray(store.state.vacaciones) ? store.state.vacaciones : []).find(v => v.id === vacacionId);
+  if (!vac) return;
+
+  quincenaModalVacId = vacacionId;
+  const emp = store.getEmpleadoById(vac.empleado_id);
+
+  document.getElementById('vac-quincena-empleado').textContent = emp ? `${emp.nombre} ${emp.apellido}` : '\u2014';
+  document.getElementById('vac-quincena-vacacion').textContent = `${formatDate(vac.fecha_inicio)} - ${formatDate(vac.fecha_fin)}`;
+  document.getElementById('vac-quincena-condicion').textContent = vac.condicion === 'pago' ? 'Pago' : 'Disfrute';
+
+  const hoy = new Date();
+  const mesActual = hoy.toLocaleDateString('es-VE', { month: 'long', year: 'numeric' });
+  document.getElementById('vac-quincena-mes').textContent = mesActual;
+
+  document.querySelectorAll('input[name="vac-quincena"]').forEach(r => r.checked = false);
+  document.getElementById('vac-quincena-error').textContent = '';
+
+  document.getElementById('vac-quincena-modal').style.display = 'flex';
+}
+
+function closeQuincenaModal() {
+  document.getElementById('vac-quincena-modal').style.display = 'none';
+  quincenaModalVacId = null;
+}
+
+async function saveQuincena() {
+  const selected = document.querySelector('input[name="vac-quincena"]:checked');
+  const errorEl = document.getElementById('vac-quincena-error');
+  if (!selected) { errorEl.textContent = 'Seleccione una quincena'; return; }
+
+  try {
+    await store.updateVacacion(quincenaModalVacId, { quincena_pago: selected.value });
+    closeQuincenaModal();
+  } catch (err) {
+    errorEl.textContent = err.message;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MODAL: REGISTRAR PAGO (Nómina ERP)
+   ══════════════════════════════════════════════════════════════ */
+
+let pagoModalVacId = null;
+
+function openPagoModal(vacacionId) {
+  const vac = (Array.isArray(store.state.vacaciones) ? store.state.vacaciones : []).find(v => v.id === vacacionId);
+  if (!vac) return;
+
+  pagoModalVacId = vacacionId;
+  const emp = store.getEmpleadoById(vac.empleado_id);
+
+  document.getElementById('vac-pago-empleado').textContent = emp ? `${emp.nombre} ${emp.apellido}` : '\u2014';
+  document.getElementById('vac-pago-vacacion').textContent = `${formatDate(vac.fecha_inicio)} - ${formatDate(vac.fecha_fin)}`;
+  document.getElementById('vac-pago-quincena').textContent = vac.quincena_pago || '\u2014';
+
+  document.getElementById('vac-pago-nomina').value = '';
+  document.getElementById('vac-pago-error').textContent = '';
+
+  document.getElementById('vac-pago-modal').style.display = 'flex';
+}
+
+function closePagoModal() {
+  document.getElementById('vac-pago-modal').style.display = 'none';
+  pagoModalVacId = null;
+}
+
+async function savePago() {
+  const nomina = document.getElementById('vac-pago-nomina').value.trim();
+  const errorEl = document.getElementById('vac-pago-error');
+  if (!nomina) { errorEl.textContent = 'Ingrese el n\u00FAmero de n\u00F3mina'; return; }
+
+  try {
+    await store.updateVacacion(pagoModalVacId, { numero_nomina: nomina });
+    closePagoModal();
+  } catch (err) {
+    errorEl.textContent = err.message;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   HISTORIAL + CALENDARIO
+   ══════════════════════════════════════════════════════════════ */
 
 function renderHistorial() {
   const container = document.getElementById('vac-historial-content');
@@ -388,7 +600,7 @@ function renderCalendar() {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   TABS + BÚSQUEDA (Días Pendientes)
+   TABS + BÚSQUEDA
    ══════════════════════════════════════════════════════════════ */
 
 export function initVacacionesTabs() {
@@ -506,7 +718,7 @@ export function initVacSearch() {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   MODAL: SOLICITAR VACACIÓN (Rediseñado con búsqueda)
+   MODAL: SOLICITAR VACACIÓN
    ══════════════════════════════════════════════════════════════ */
 
 export function initVacacionesModal() {
@@ -665,10 +877,11 @@ function updateSolicitudPreview() {
   const fechaInicioDate = new Date(fechaInicio + 'T00:00:00');
   const diffDias = Math.ceil((fechaInicioDate - hoy) / (1000 * 60 * 60 * 24));
   if (diffDias < 15) {
+    const errorEl = document.getElementById('vac-modal-error');
     if (warnEl) {
       warnEl.textContent = 'La solicitud se esta realizando con menos de 15 dias de anticipacion, lo cual dificulta los procesos administrativos y de nomina que conlleva su vacacion.';
       warnEl.style.display = 'block';
-    } else {
+    } else if (errorEl) {
       errorEl.textContent = '\u26A0 La solicitud se esta realizando con menos de 15 dias de anticipacion, lo cual dificulta los procesos administrativos y de nomina que conlleva su vacacion.';
       errorEl.style.color = 'var(--color-warning)';
     }
@@ -761,7 +974,7 @@ async function saveVacacion() {
   const anios = calcularAniosServicio(emp.fecha_ingreso);
   const diasCorrespondientes = Math.min(15 + Math.max(0, anios - 1), 30);
   const fechaInicioYear = new Date(fechaInicio).getFullYear();
-  const periodo = `${fechaInicioYear - 1}-${fechaInicioYear.toString().slice(-2)}`;
+  const periodo = `${(fechaInicioYear - 1).toString().slice(-2)}-${fechaInicioYear.toString().slice(-2)}`;
 
   const btn = document.getElementById('vac-modal-save');
   btn.disabled = true;
@@ -917,5 +1130,19 @@ export function initUsoModal() {
   document.getElementById('vac-uso-dias')?.addEventListener('input', updateUsoPreview);
   document.getElementById('vac-uso-modal')?.addEventListener('click', (e) => {
     if (e.target === e.currentTarget) closeUsoModal();
+  });
+
+  document.getElementById('vac-quincena-close')?.addEventListener('click', closeQuincenaModal);
+  document.getElementById('vac-quincena-cancel')?.addEventListener('click', closeQuincenaModal);
+  document.getElementById('vac-quincena-save')?.addEventListener('click', saveQuincena);
+  document.getElementById('vac-quincena-modal')?.addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeQuincenaModal();
+  });
+
+  document.getElementById('vac-pago-close')?.addEventListener('click', closePagoModal);
+  document.getElementById('vac-pago-cancel')?.addEventListener('click', closePagoModal);
+  document.getElementById('vac-pago-save')?.addEventListener('click', savePago);
+  document.getElementById('vac-pago-modal')?.addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closePagoModal();
   });
 }

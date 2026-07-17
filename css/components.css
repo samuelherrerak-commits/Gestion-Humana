@@ -267,6 +267,8 @@
 .badge--info { background: var(--color-info-light); color: var(--color-info); }
 .badge--success { background: var(--color-success-light); color: var(--color-success-dark); }
 
+body:not(.role-admin) .vac-admin-only { display: none; }
+
 /* ── FORMS ── */
 .form-group {
   margin-bottom: var(--space-4);

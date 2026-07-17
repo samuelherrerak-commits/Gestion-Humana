@@ -316,6 +316,17 @@ class Store {
     return updated;
   }
 
+  determineVacacionCondition(empleadoId, periodo) {
+    const vacs = (Array.isArray(this.state.vacaciones) ? this.state.vacaciones : []);
+    const yaPagado = vacs.some(v =>
+      v.empleado_id === empleadoId &&
+      v.periodo === periodo &&
+      v.estatus === 'aprobado' &&
+      v.condicion === 'pago'
+    );
+    return yaPagado ? 'disfrute' : 'pago';
+  }
+
   exportState() {
     return JSON.parse(JSON.stringify(this.state));
   }

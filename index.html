@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="css/auth.css">
   <link rel="stylesheet" href="css/print.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 </head>
 <body>
 
@@ -279,8 +280,7 @@
                   <div style="display:flex;gap:var(--space-2)">
                     <select id="vac-filter-estatus" class="form-select" style="padding:var(--space-1) var(--space-2);font-size:var(--font-size-xs)">
                       <option value="">Todas</option>
-                      <option value="pendiente_jefe">Pendientes Jefe</option>
-                      <option value="aprobado_jefe">Pendientes RRHH</option>
+                      <option value="pendiente_jefe">Pendientes</option>
                       <option value="aprobado">Aprobadas</option>
                       <option value="rechazado">Rechazadas</option>
                     </select>
@@ -294,8 +294,11 @@
                         <th>Per&#237;odo</th>
                         <th>D&#237;as Disfrute</th>
                         <th>D&#237;as Pago</th>
+                        <th>Condici&#243;n</th>
                         <th>Estatus</th>
                         <th>Fecha</th>
+                        <th class="vac-admin-only">Quincena</th>
+                        <th class="vac-admin-only">N&#176; N&#243;mina</th>
                         <th>Acciones</th>
                       </tr>
                     </thead>
@@ -527,6 +530,64 @@
       <div class="modal__footer">
         <button class="btn btn--ghost" id="vac-uso-cancel">Cancelar</button>
         <button class="btn btn--primary" id="vac-uso-save">Aplicar Descuento</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="vac-quincena-modal" class="modal-overlay" style="display:none">
+    <div class="modal" style="max-width:420px">
+      <div class="modal__header">
+        <h3 class="modal__title">Asignar Quincena de Pago</h3>
+        <button class="modal__close" id="vac-quincena-close">&times;</button>
+      </div>
+      <div class="modal__body">
+        <p style="font-size:var(--font-size-sm);color:var(--color-text-secondary);margin-bottom:var(--space-2)">Empleado:</p>
+        <p id="vac-quincena-empleado" style="font-weight:var(--font-weight-semibold);margin-bottom:var(--space-3);color:var(--color-text)"></p>
+        <p style="font-size:var(--font-size-sm);color:var(--color-text-secondary);margin-bottom:var(--space-2)">Vacaci&#243;n:</p>
+        <p id="vac-quincena-vacacion" style="font-size:var(--font-size-sm);margin-bottom:var(--space-3);color:var(--color-text)"></p>
+        <p style="font-size:var(--font-size-sm);color:var(--color-text-secondary);margin-bottom:var(--space-2)">Condici&#243;n:</p>
+        <p id="vac-quincena-condicion" style="font-size:var(--font-size-sm);font-weight:var(--font-weight-semibold);margin-bottom:var(--space-4);color:var(--color-text)"></p>
+        <div class="form-group">
+          <label class="form-label">Seleccionar quincena *</label>
+          <label style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-2);cursor:pointer;font-size:var(--font-size-sm)">
+            <input type="radio" name="vac-quincena" value="1ra"> 1ra quincena (1-15 del mes)
+          </label>
+          <label style="display:flex;align-items:center;gap:var(--space-2);cursor:pointer;font-size:var(--font-size-sm)">
+            <input type="radio" name="vac-quincena" value="2da"> 2da quincena (16-fin del mes)
+          </label>
+        </div>
+        <p style="font-size:var(--font-size-sm);color:var(--color-text-secondary);margin-top:var(--space-3)">Mes m&#225;s cercano: <strong id="vac-quincena-mes"></strong></p>
+        <div class="form-error" id="vac-quincena-error"></div>
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn--ghost" id="vac-quincena-cancel">Cancelar</button>
+        <button class="btn btn--primary" id="vac-quincena-save">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="vac-pago-modal" class="modal-overlay" style="display:none">
+    <div class="modal" style="max-width:420px">
+      <div class="modal__header">
+        <h3 class="modal__title">Registrar Pago</h3>
+        <button class="modal__close" id="vac-pago-close">&times;</button>
+      </div>
+      <div class="modal__body">
+        <p style="font-size:var(--font-size-sm);color:var(--color-text-secondary);margin-bottom:var(--space-2)">Empleado:</p>
+        <p id="vac-pago-empleado" style="font-weight:var(--font-weight-semibold);margin-bottom:var(--space-3);color:var(--color-text)"></p>
+        <p style="font-size:var(--font-size-sm);color:var(--color-text-secondary);margin-bottom:var(--space-2)">Vacaci&#243;n:</p>
+        <p id="vac-pago-vacacion" style="font-size:var(--font-size-sm);margin-bottom:var(--space-3);color:var(--color-text)"></p>
+        <p style="font-size:var(--font-size-sm);color:var(--color-text-secondary);margin-bottom:var(--space-2)">Quincena asignada:</p>
+        <p id="vac-pago-quincena" style="font-size:var(--font-size-sm);font-weight:var(--font-weight-semibold);margin-bottom:var(--space-4);color:var(--color-text)"></p>
+        <div class="form-group">
+          <label class="form-label">N&#176; N&#243;mina (ERP) *</label>
+          <input type="text" id="vac-pago-nomina" class="form-input" placeholder="Ingrese el n&#250;mero de n&#243;mina">
+        </div>
+        <div class="form-error" id="vac-pago-error"></div>
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn--ghost" id="vac-pago-cancel">Cancelar</button>
+        <button class="btn btn--primary" id="vac-pago-save">Registrar Pago</button>
       </div>
     </div>
   </div>

@@ -3,6 +3,8 @@ import { pubsub } from '../utils/pubsub.js';
 import { EVENT, getDepartamentosFromStore, TIPOS_CONSTANCIA_LABELS, ESTATUS_VACACION_LABELS, ESTATUS_VACACION_COLORS } from '../constants.js';
 import { showView } from './app.js';
 import { formatDate } from '../utils/format.js';
+import { aprobarVacacion } from './vacaciones.js';
+import { generarConstanciaPDF } from './constancia-pdf.js';
 
 export function renderDashboard() {
   const old = document.getElementById('dash-extra');
@@ -177,11 +179,12 @@ function renderGerenteDashboard() {
       <div class="panel__header"><h2 class="panel__title">Mis Constancias</h2></div>
       <div class="data-table-wrap">
         <table class="data-table">
-          <thead><tr><th>Tipo</th><th>Fecha</th></tr></thead>
+          <thead><tr><th>Tipo</th><th>Fecha</th><th>Acciones</th></tr></thead>
           <tbody>
             ${ultimasConst.map(c => `<tr>
               <td class="cell-primary">${TIPOS_CONSTANCIA_LABELS[c.tipo] || c.tipo}</td>
               <td>${formatDate(c.fecha_emision)}</td>
+              <td><button class="btn btn--ghost btn--sm btn-dash-const-pdf" data-id="${c.id}">\u{1F4E5} PDF</button></td>
             </tr>`).join('')}
           </tbody>
         </table>
@@ -197,12 +200,33 @@ function renderGerenteDashboard() {
   if (dashExtra) {
     dashExtra.querySelectorAll('.btn-ger-approve').forEach(btn => {
       btn.addEventListener('click', async () => {
-        await store.updateVacacion(parseInt(btn.dataset.id), { estatus: 'aprobado_jefe' });
+        await aprobarVacacion(parseInt(btn.dataset.id));
+        renderDashboard();
       });
     });
     dashExtra.querySelectorAll('.btn-ger-reject').forEach(btn => {
       btn.addEventListener('click', async () => {
         await store.updateVacacion(parseInt(btn.dataset.id), { estatus: 'rechazado' });
+      });
+    });
+    dashExtra.querySelectorAll('.btn-dash-const-pdf').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const c = (Array.isArray(store.state.constancias) ? store.state.constancias : []).find(x => x.id === parseInt(btn.dataset.id));
+        if (c) {
+          const emp = store.getEmpleadoById(c.empleado_id);
+          const opciones = {};
+          if (c.tipo === 'vacaciones' && emp) {
+            const historial = store.getHistorialByEmpleado(c.empleado_id);
+            const periodosPendientes = historial.filter(h => h.pendientes > 0).map(h => ({ periodo: h.periodo, dias: h.pendientes }));
+            opciones.fecha_inicio = c.fecha_inicio;
+            opciones.fecha_fin = c.fecha_fin;
+            opciones.dias_solicitados = c.dias_solicitados;
+            opciones.condicion = c.condicion;
+            opciones.periodosPendientes = periodosPendientes;
+            opciones.totalPendientes = periodosPendientes.reduce((s, p) => s + p.dias, 0);
+          }
+          generarConstanciaPDF(c, emp, opciones);
+        }
       });
     });
   }
@@ -283,11 +307,12 @@ function renderEmployeeDashboard() {
       <div class="panel__header"><h2 class="panel__title">Mis Constancias</h2></div>
       <div class="data-table-wrap">
         <table class="data-table">
-          <thead><tr><th>Tipo</th><th>Fecha</th></tr></thead>
+          <thead><tr><th>Tipo</th><th>Fecha</th><th>Acciones</th></tr></thead>
           <tbody>
             ${ultimasConst.map(c => `<tr>
               <td class="cell-primary">${TIPOS_CONSTANCIA_LABELS[c.tipo] || c.tipo}</td>
               <td>${formatDate(c.fecha_emision)}</td>
+              <td><button class="btn btn--ghost btn--sm btn-dash-const-pdf" data-id="${c.id}">\u{1F4E5} PDF</button></td>
             </tr>`).join('')}
           </tbody>
         </table>
@@ -297,6 +322,30 @@ function renderEmployeeDashboard() {
 
   const quickAccess = document.getElementById('quick-access');
   if (quickAccess) quickAccess.insertAdjacentHTML('afterend', `<div id="dash-extra">${secciones}</div>`);
+
+  const dashExtra = document.getElementById('dash-extra');
+  if (dashExtra) {
+    dashExtra.querySelectorAll('.btn-dash-const-pdf').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const c = (Array.isArray(store.state.constancias) ? store.state.constancias : []).find(x => x.id === parseInt(btn.dataset.id));
+        if (c) {
+          const emp = store.getEmpleadoById(c.empleado_id);
+          const opciones = {};
+          if (c.tipo === 'vacaciones' && emp) {
+            const historial = store.getHistorialByEmpleado(c.empleado_id);
+            const periodosPendientes = historial.filter(h => h.pendientes > 0).map(h => ({ periodo: h.periodo, dias: h.pendientes }));
+            opciones.fecha_inicio = c.fecha_inicio;
+            opciones.fecha_fin = c.fecha_fin;
+            opciones.dias_solicitados = c.dias_solicitados;
+            opciones.condicion = c.condicion;
+            opciones.periodosPendientes = periodosPendientes;
+            opciones.totalPendientes = periodosPendientes.reduce((s, p) => s + p.dias, 0);
+          }
+          generarConstanciaPDF(c, emp, opciones);
+        }
+      });
+    });
+  }
 }
 
 function renderAccesoRapidoNoAdmin() {

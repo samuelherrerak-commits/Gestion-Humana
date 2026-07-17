@@ -26,10 +26,12 @@ export function renderConstancias() {
 
   container.innerHTML = constancias.map(c => {
     const emp = store.getEmpleadoById(c.empleado_id);
+    const tipoLabel = TIPOS_CONSTANCIA_LABELS[c.tipo] || c.tipo;
+    const badgeClass = c.tipo === 'vacaciones' ? 'badge--success' : 'badge--info';
     return `
     <tr data-id="${c.id}">
       <td class="cell-primary">${emp ? emp.nombre + ' ' + emp.apellido : '—'}</td>
-      <td><span class="badge badge--info">${TIPOS_CONSTANCIA_LABELS[c.tipo] || c.tipo}</span></td>
+      <td><span class="badge ${badgeClass}">${tipoLabel}</span></td>
       <td>${formatDate(c.fecha_emision)}</td>
       <td>
         <button class="btn btn--ghost btn--sm btn-const-pdf" data-id="${c.id}" title="Descargar PDF">\u{1F4E5} PDF</button>
@@ -43,7 +45,18 @@ export function renderConstancias() {
       const c = (Array.isArray(store.state.constancias) ? store.state.constancias : []).find(x => x.id === parseInt(btn.dataset.id));
       if (c) {
         const emp = store.getEmpleadoById(c.empleado_id);
-        generarConstanciaPDF(c, emp);
+        const opciones = {};
+        if (c.tipo === 'vacaciones' && emp) {
+          const historial = store.getHistorialByEmpleado(c.empleado_id);
+          const periodosPendientes = historial.filter(h => h.pendientes > 0).map(h => ({ periodo: h.periodo, dias: h.pendientes }));
+          opciones.fecha_inicio = c.fecha_inicio;
+          opciones.fecha_fin = c.fecha_fin;
+          opciones.dias_solicitados = c.dias_solicitados;
+          opciones.condicion = c.condicion;
+          opciones.periodosPendientes = periodosPendientes;
+          opciones.totalPendientes = periodosPendientes.reduce((s, p) => s + p.dias, 0);
+        }
+        generarConstanciaPDF(c, emp, opciones);
       }
     });
   });
@@ -282,10 +295,11 @@ function checkConstanciaMensualLimit(empleadoId) {
   const currentYear = now.getFullYear();
   const yaTiene = constancias.some(c => {
     if (c.empleado_id !== empleadoId) return false;
+    if (c.tipo !== 'trabajo') return false;
     const fecha = new Date(c.fecha_emision);
     return fecha.getMonth() === currentMonth && fecha.getFullYear() === currentYear;
   });
-  return { allowed: !yaTiene, message: yaTiene ? 'Ya ha solicitado una constancia este mes. Espere al próximo mes.' : '' };
+  return { allowed: !yaTiene, message: yaTiene ? 'Ya ha solicitado una constancia de trabajo este mes. Espere al próximo mes.' : '' };
 }
 
 export function openSolicitarConstanciaModal() {

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sistema-rrhh-v20';
+const CACHE_NAME = 'sistema-rrhh-v28';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
