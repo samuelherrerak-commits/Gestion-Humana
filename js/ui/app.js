@@ -31,7 +31,6 @@ export function initApp() {
 
 function applyRoleVisibility() {
   const isAdmin = store.hasRole('admin');
-  const isGerente = store.hasRole('gerente');
 
   const hideIf = (selector, condition) => {
     document.querySelectorAll(selector).forEach(el => {
@@ -39,24 +38,29 @@ function applyRoleVisibility() {
     });
   };
 
+  // Solo admin ve: Empleados, Expedientes, Organización, Auditoría
   hideIf('[data-view="empleados"]', !isAdmin);
   hideIf('[data-view="expedientes"]', !isAdmin);
-
-  const orgLinks = document.querySelector('.sidebar__group-label[data-group="organizacion"]')?.closest('.sidebar__group')?.querySelectorAll('.sidebar__link');
-  if (orgLinks) orgLinks.forEach(l => { if (!isAdmin) l.style.display = 'none'; });
-
-  const fideLinks = document.querySelector('.sidebar__group-label[data-group="fideicomiso"]')?.closest('.sidebar__group')?.querySelectorAll('.sidebar__link');
-  if (fideLinks) fideLinks.forEach(l => { if (!isAdmin) l.style.display = 'none'; });
+  hideIf('[data-view="organizacion-estructura"]', !isAdmin);
+  hideIf('[data-view="organizacion-departamentos"]', !isAdmin);
+  hideIf('.sidebar__group-label[data-group="organizacion"]', !isAdmin);
+  hideIf('.sidebar__group-label[data-group="auditoria"]', !isAdmin);
+  hideIf('.sidebar__link[data-external="auditoria"]', !isAdmin);
 }
 
 function setupNavigation() {
+  const closeSidebar = () => {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar-overlay')?.classList.remove('active');
+  };
+
   document.querySelectorAll('.sidebar__link[data-view]').forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
       const view = e.currentTarget.dataset.view;
       showView(view);
       updateSidebarActive(view);
-      document.getElementById('sidebar').classList.remove('open');
+      closeSidebar();
     });
   });
 
@@ -67,15 +71,35 @@ function setupNavigation() {
       const view = e.currentTarget.dataset.view;
       showView(view);
       updateSidebarActive(view);
-      document.getElementById('sidebar').classList.remove('open');
+      closeSidebar();
     });
   });
 }
 
 function setupTopbar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('active');
+  }
+
+  function openSidebar() {
+    sidebar.classList.add('open');
+    overlay.classList.add('active');
+  }
+
   document.getElementById('menu-toggle')?.addEventListener('click', () => {
-    document.getElementById('sidebar').classList.toggle('open');
+    if (sidebar.classList.contains('open')) {
+      closeSidebar();
+    } else {
+      openSidebar();
+    }
   });
+
+  document.getElementById('sidebar-close')?.addEventListener('click', closeSidebar);
+  overlay?.addEventListener('click', closeSidebar);
 
   document.getElementById('btn-print')?.addEventListener('click', () => {
     window.print();
