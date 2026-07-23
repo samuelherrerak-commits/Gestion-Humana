@@ -42,8 +42,6 @@ function applyRoleVisibility() {
   hideIf('[data-view="empleados"]', !isAdmin);
   hideIf('[data-view="expedientes"]', !isAdmin);
   hideIf('[data-view="organizacion-estructura"]', !isAdmin);
-  hideIf('[data-view="organizacion-departamentos"]', !isAdmin);
-  hideIf('.sidebar__group-label[data-group="organizacion"]', !isAdmin);
   hideIf('.sidebar__group-label[data-group="auditoria"]', !isAdmin);
   hideIf('.sidebar__link[data-external="auditoria"]', !isAdmin);
 }
@@ -116,9 +114,9 @@ function attachGlobalEvents() {
 
 const VIEW_TITLES = {
   'dashboard': ['Dashboard', 'Panel de control general'],
-  'empleados': ['Empleados', 'Gestión de personal'],
-  'empleado-detalle': ['Detalle del Empleado', 'Información completa'],
-  'expedientes': ['Expedientes Digitales', 'Documentos de empleados'],
+  'empleados': ['Fichas', 'Ficha del trabajador'],
+  'empleado-detalle': ['Ficha del Trabajador', 'Información completa'],
+  'expedientes': ['Expedientes', 'Control documental de empleados'],
   'vacaciones': ['Vacaciones', 'Solicitudes y calendario'],
   'constancias': ['Constancias', 'Generación de documentos'],
   'organizacion-estructura': ['Organización', 'Estructura organizacional'],

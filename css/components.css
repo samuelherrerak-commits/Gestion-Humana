@@ -1027,8 +1027,134 @@ body:not(.role-admin) .vac-admin-only { display: none; }
 .autocomplete-clear:hover { opacity: 1; }
 
 /* ════════════════════════════════════════════════════════════
-   EXPEDIENTES — CARDS + DETAIL
+   EXPEDIENTES — DASHBOARD + CARDS + DETAIL
    ════════════════════════════════════════════════════════════ */
+
+/* Dashboard KPIs */
+.exp-dashboard-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.exp-kpi {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  text-align: center;
+}
+
+.exp-kpi__value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-navy-900);
+}
+
+.exp-kpi__label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  margin-top: var(--space-1);
+}
+
+.exp-kpi--success .exp-kpi__value { color: var(--color-success); }
+.exp-kpi--warning .exp-kpi__value { color: var(--color-warning); }
+.exp-kpi--danger .exp-kpi__value { color: var(--color-danger); }
+
+/* Progress general */
+.exp-progress-general {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.exp-progress-general__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+}
+
+.exp-progress-general__pct {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-navy-900);
+}
+
+.exp-progress--lg {
+  height: 10px;
+}
+
+/* Faltantes */
+.exp-faltantes {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.exp-faltantes__title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-3);
+}
+
+.exp-faltantes__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.exp-faltante {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+}
+
+.exp-faltante--danger { background: var(--color-danger-light); color: var(--color-danger-dark); }
+.exp-faltante--warning { background: var(--color-warning-light); color: var(--color-warning-dark); }
+.exp-faltante--success { background: var(--color-success-light); color: var(--color-success-dark); }
+
+.exp-faltante__count {
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Toolbar for search */
+.exp-toolbar {
+  display: flex;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.exp-toolbar .toolbar__search { flex: 1; min-width: 200px; }
+
+/* Form section titles */
+.form-section-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-navy-900);
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-2);
+  margin-top: var(--space-5);
+  margin-bottom: var(--space-3);
+}
+
+/* Small form inputs */
+.form-input--sm {
+  padding: var(--space-1) var(--space-2) !important;
+  font-size: var(--font-size-sm) !important;
+  min-height: 32px;
+}
 
 .expedientes-content {
   min-height: 400px;

@@ -104,7 +104,7 @@
         <div class="sidebar__group-label">Gestión RRHH</div>
         <a href="#" class="sidebar__link" data-view="empleados">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          Empleados
+          Fichas
         </a>
         <a href="#" class="sidebar__link" data-view="expedientes">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
@@ -118,27 +118,19 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
           Constancias
         </a>
-
-        <div class="sidebar__group-label" data-group="organizacion">Organizaci&#243;n</div>
-        <a href="#" class="sidebar__link" data-view="organizacion-estructura">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="16" y="16" width="6" height="6" rx="1"/><path d="M12 8v4"/><path d="M6 14h4"/><path d="M14 14h4"/></svg>
-          Estructura
-        </a>
-        <a href="#" class="sidebar__link" data-view="organizacion-departamentos">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          Departamentos
-        </a>
-
-        <div class="sidebar__group-label">Fideicomiso</div>
         <a href="#" class="sidebar__link" data-view="fideicomiso">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/><path d="M6 16h4"/></svg>
           Prestaciones Sociales
         </a>
+        <a href="#" class="sidebar__link" data-view="organizacion-estructura">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="16" y="16" width="6" height="6" rx="1"/><path d="M12 8v4"/><path d="M6 14h4"/><path d="M14 14h4"/></svg>
+          Organización
+        </a>
 
-        <div class="sidebar__group-label" data-group="auditoria">Auditor&#237;a</div>
+        <div class="sidebar__group-label" data-group="auditoria">Auditoría</div>
         <a href="https://auditoria-rrhh.onrender.com" target="_blank" class="sidebar__link" data-external="auditoria">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-          Auditor&#237;a Legal
+          Auditoría Legal
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="margin-left:auto;opacity:0.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
         </a>
       </nav>
@@ -235,13 +227,7 @@
 
         <!-- ████████████  EXPEDIENTES  ████████████ -->
         <section id="view-expedientes" class="view">
-          <div class="toolbar">
-            <h2 class="toolbar__title">Expedientes</h2>
-            <select id="exp-filter-localidad"><option value="">Todas las localidades</option></select>
-          </div>
-          <div class="panel">
-            <div id="expedientes-content" class="expedientes-content"></div>
-          </div>
+          <div id="expedientes-content" class="expedientes-content"></div>
         </section>
 
         <!-- ████████████  VACACIONES  ████████████ -->
@@ -377,12 +363,13 @@
 
   <!-- ████████████████  EMPLEADO MODAL  ████████████████ -->
   <div id="empleado-modal" class="modal-overlay" style="display:none">
-    <div class="modal">
+    <div class="modal modal--lg">
       <div class="modal__header">
-        <h3 class="modal__title" id="empleado-modal-title">Nuevo Empleado</h3>
+        <h3 class="modal__title" id="empleado-modal-title">Nueva Ficha</h3>
         <button class="modal__close" id="empleado-modal-close">&times;</button>
       </div>
-      <div class="modal__body">
+      <div class="modal__body" style="max-height:70vh;overflow-y:auto">
+        <h4 class="form-section-title">Datos Básicos</h4>
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Nombre *</label>
@@ -403,6 +390,29 @@
             <input type="date" id="emp-fecha-nac" class="form-input">
           </div>
         </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Género</label>
+            <select id="emp-genero" class="form-select">
+              <option value="">Seleccionar...</option>
+              <option value="M">Masculino</option>
+              <option value="F">Femenino</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Estado Civil</label>
+            <select id="emp-estado-civil" class="form-select">
+              <option value="">Seleccionar...</option>
+              <option value="soltero">Soltero(a)</option>
+              <option value="casado">Casado(a)</option>
+              <option value="divorciado">Divorciado(a)</option>
+              <option value="viudo">Viudo(a)</option>
+              <option value="union_libre">Unión Libre</option>
+            </select>
+          </div>
+        </div>
+
+        <h4 class="form-section-title">Datos Laborales</h4>
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Fecha de Ingreso</label>
@@ -434,9 +444,79 @@
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">URL Foto</label>
-            <input type="url" id="emp-foto-url" class="form-input" placeholder="https://...">
+            <label class="form-label">Localidad</label>
+            <select id="emp-localidad" class="form-select">
+              <option value="">Seleccionar...</option>
+            </select>
           </div>
+        </div>
+
+        <h4 class="form-section-title">Datos de Contacto</h4>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Teléfono Principal</label>
+            <input type="tel" id="emp-telefono" class="form-input" placeholder="0412-1234567">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Teléfono Alternativo</label>
+            <input type="tel" id="emp-telefono-alt" class="form-input" placeholder="0412-1234567">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Correo Personal</label>
+          <input type="email" id="emp-correo-personal" class="form-input" placeholder="correo@ejemplo.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Dirección Actual</label>
+          <input type="text" id="emp-direccion" class="form-input" placeholder="Calle, urbanización, ciudad">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estado / Ciudad</label>
+          <input type="text" id="emp-estado-ciudad" class="form-input" placeholder="Estado / Ciudad">
+        </div>
+
+        <h4 class="form-section-title">Nivel Académico</h4>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nivel de Estudios</label>
+            <select id="emp-nivel-estudios" class="form-select">
+              <option value="">Seleccionar...</option>
+              <option value="primaria">Primaria</option>
+              <option value="secundaria">Secundaria</option>
+              <option value="tecnico">Técnico</option>
+              <option value="licenciatura">Licenciatura</option>
+              <option value="maestria">Maestría</option>
+              <option value="doctorado">Doctorado</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Año de Graduación</label>
+            <input type="number" id="emp-anio-graduacion" class="form-input" min="1950" max="2030">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Título Obtenido</label>
+            <input type="text" id="emp-titulo-obtenido" class="form-input" placeholder="Ej: Ing. en Sistemas">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Universidad / Institución</label>
+            <input type="text" id="emp-universidad" class="form-input">
+          </div>
+        </div>
+
+        <h4 class="form-section-title">Hijos</h4>
+        <div id="emp-hijos-container">
+          <div class="emp-hijos-empty" style="color:var(--color-text-muted);font-size:var(--font-size-sm);margin-bottom:var(--space-3)">No hay hijos registrados</div>
+        </div>
+        <button type="button" class="btn btn--ghost btn--sm" id="btn-add-hijo">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Agregar Hijo
+        </button>
+
+        <div class="form-group" style="margin-top:var(--space-4)">
+          <label class="form-label">URL Foto</label>
+          <input type="url" id="emp-foto-url" class="form-input" placeholder="https://...">
         </div>
         <div class="form-error" id="empleado-modal-error"></div>
       </div>

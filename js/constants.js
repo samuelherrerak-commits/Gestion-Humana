@@ -14,23 +14,33 @@ export const ESTATUS_EMPLEADO_LABELS = {
 };
 
 export const SECCIONES_EXPEDIENTE = {
-  PERSONALES: {
-    key: 'personales',
-    label: 'Datos Personales',
+  KIT_INGRESO: {
+    key: 'kit_ingreso',
+    label: 'Kit de Ingreso',
     tipos: [
       { key: 'cv', label: 'Currículum Vitae', icon: '\u{1F4C4}', multiple: false },
-      { key: 'cedula', label: 'Cédula de Identidad', icon: '\u{1FAAA}', multiple: false },
-      { key: 'rif', label: 'RIF', icon: '\u{1F4CB}', multiple: false },
-      { key: 'estudios', label: 'Estudios / Títulos', icon: '\u{1F393}', multiple: true }
+      { key: 'solicitud_empleo', label: 'Solicitud de Empleo', icon: '\u{1F4DD}', multiple: false },
+      { key: 'contrato', label: 'Contrato Laboral', icon: '\u{1F4D1}', multiple: true },
+      { key: 'hoja_ruta', label: 'Hoja de Ruta', icon: '\u{1F4CB}', multiple: false },
+      { key: 'carta_riesgos', label: 'Carta de Notificación de Riesgos', icon: '\u{26A0}\uFE0F', multiple: false },
+      { key: 'acuerdo_confidencialidad', label: 'Acuerdo de Confidencialidad', icon: '\u{1F512}', multiple: false },
+      { key: 'constancia_ivss', label: 'Constancia de Inscripción IVSS', icon: '\u{1F3E5}', multiple: false }
     ]
   },
-  EMPRESA: {
-    key: 'empresa',
-    label: 'Relación con la Empresa',
+  DOCUMENTACION_PERSONAL: {
+    key: 'documentacion_personal',
+    label: 'Documentación Personal',
     tipos: [
-      { key: 'solicitud_empleo', label: 'Solicitud de Empleo', icon: '\u{1F4DD}', multiple: false },
-      { key: 'contrato', label: 'Contrato', icon: '\u{1F4D1}', multiple: true },
-      { key: 'otros', label: 'Otros', icon: '\u{1F4CE}', multiple: true }
+      { key: 'cedula', label: 'Cédula de Identidad', icon: '\u{1FAAA}', multiple: false },
+      { key: 'rif', label: 'RIF', icon: '\u{1F4CB}', multiple: false },
+      { key: 'titulos', label: 'Títulos Académicos', icon: '\u{1F393}', multiple: true }
+    ]
+  },
+  OTROS: {
+    key: 'otros',
+    label: 'Otros',
+    tipos: [
+      { key: 'otros', label: 'Otros Documentos', icon: '\u{1F4CE}', multiple: true }
     ]
   }
 };

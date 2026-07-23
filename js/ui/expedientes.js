@@ -4,7 +4,7 @@ import { EVENT, SECCIONES_EXPEDIENTE, getTipoExpMeta, getTiposExpFlat, getLocali
 import { formatDate, getInitials } from '../utils/format.js';
 import { getFileIcon, formatFileSize } from '../utils/file.js';
 
-let currentView = 'cards';
+let currentView = 'dashboard';
 let selectedEmpleadoId = null;
 
 export function renderExpedientes() {
@@ -14,44 +14,108 @@ export function renderExpedientes() {
   if (currentView === 'detail' && selectedEmpleadoId) {
     renderDetail(container);
   } else {
-    renderCards(container);
+    renderDashboard(container);
   }
 }
 
-function renderCards(container) {
+function renderDashboard(container) {
   const allEmpleados = (Array.isArray(store.state.empleados) ? store.state.empleados : [])
     .filter(e => e.estatus === 'activo');
-
-  const localidades = getLocalidadesFromStore(allEmpleados);
-  const selectLocalidad = document.getElementById('exp-filter-localidad');
-  if (selectLocalidad && selectLocalidad.options.length <= 1) {
-    localidades.forEach(loc => {
-      const opt = document.createElement('option');
-      opt.value = loc;
-      opt.textContent = loc;
-      selectLocalidad.appendChild(opt);
-    });
-  }
-
-  const filterLoc = selectLocalidad?.value || '';
-  const empleados = filterLoc ? allEmpleados.filter(e => e.localidad === filterLoc) : allEmpleados;
-
   const documentos = Array.isArray(store.state.documentos) ? store.state.documentos : [];
 
-  if (empleados.length === 0) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <h3>No hay empleados</h3>
-        <p>Agrega empleados para gestionar sus expedientes</p>
-      </div>`;
-    return;
+  const filterLoc = document.getElementById('exp-filter-localidad')?.value || '';
+  const search = (document.getElementById('exp-search')?.value || '').toLowerCase();
+  let empleados = filterLoc ? allEmpleados.filter(e => e.localidad === filterLoc) : allEmpleados;
+  if (search) {
+    empleados = empleados.filter(e =>
+      (e.nombre + ' ' + e.apellido).toLowerCase().includes(search) ||
+      (e.cedula || '').toLowerCase().includes(search)
+    );
   }
 
+  const tiposEsperados = getTiposExpFlat().filter(t => !t.multiple);
+  let completos = 0;
+  let incompletos = 0;
+  let totalPct = 0;
+
+  const faltantesMap = {};
+  tiposEsperados.forEach(t => { faltantesMap[t.key] = { ...t, count: 0 }; });
+
+  empleados.forEach(emp => {
+    const docs = documentos.filter(d => d.empleado_id === emp.id);
+    const completados = tiposEsperados.filter(t => docs.some(d => d.tipo === t.key)).length;
+    const pct = tiposEsperados.length > 0 ? Math.round((completados / tiposEsperados.length) * 100) : 0;
+    totalPct += pct;
+    if (pct === 100) completos++;
+    else incompletos++;
+
+    tiposEsperados.forEach(t => {
+      if (!docs.some(d => d.tipo === t.key)) {
+        faltantesMap[t.key].count++;
+      }
+    });
+  });
+
+  const promedio = empleados.length > 0 ? Math.round(totalPct / empleados.length) : 0;
+  const faltantesList = Object.values(faltantesMap).filter(f => f.count > 0).sort((a, b) => b.count - a.count);
+
+  const localidades = getLocalidadesFromStore(allEmpleados);
+
   container.innerHTML = `
+    <div class="exp-dashboard-kpis">
+      <div class="exp-kpi">
+        <div class="exp-kpi__value">${empleados.length}</div>
+        <div class="exp-kpi__label">Empleados</div>
+      </div>
+      <div class="exp-kpi exp-kpi--success">
+        <div class="exp-kpi__value">${completos}</div>
+        <div class="exp-kpi__label">Completos</div>
+      </div>
+      <div class="exp-kpi exp-kpi--warning">
+        <div class="exp-kpi__value">${incompletos}</div>
+        <div class="exp-kpi__label">Incompletos</div>
+      </div>
+    </div>
+
+    <div class="exp-progress-general">
+      <div class="exp-progress-general__header">
+        <span>Progreso General</span>
+        <span class="exp-progress-general__pct">${promedio}%</span>
+      </div>
+      <div class="exp-progress exp-progress--lg">
+        <div class="exp-progress__bar" style="width:${promedio}%"></div>
+      </div>
+    </div>
+
+    ${faltantesList.length > 0 ? `
+    <div class="exp-faltantes">
+      <h3 class="exp-faltantes__title">Documentos Más Faltantes</h3>
+      <div class="exp-faltantes__list">
+        ${faltantesList.map(f => {
+          const severity = f.count > 50 ? 'danger' : f.count > 20 ? 'warning' : 'success';
+          return `
+          <div class="exp-faltante exp-faltante--${severity}">
+            <span class="exp-faltante__label">${f.icon} ${f.label}</span>
+            <span class="exp-faltante__count">${f.count} faltan</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>` : ''}
+
+    <div class="exp-toolbar">
+      <div class="toolbar__search" data-action="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="exp-search" placeholder="Buscar por nombre o cédula...">
+      </div>
+      <select id="exp-filter-localidad" class="form-select">
+        <option value="">Todas las localidades</option>
+        ${localidades.map(l => `<option value="${l}" ${filterLoc === l ? 'selected' : ''}>${l}</option>`).join('')}
+      </select>
+    </div>
+
     <div class="expedientes-grid">
       ${empleados.map(emp => {
         const docs = documentos.filter(d => d.empleado_id === emp.id);
-        const tiposEsperados = getTiposExpFlat().filter(t => !t.multiple);
         const completados = tiposEsperados.filter(t => docs.some(d => d.tipo === t.key)).length;
         const pct = tiposEsperados.length > 0 ? Math.round((completados / tiposEsperados.length) * 100) : 0;
         const inicial = getInitials(emp.nombre, emp.apellido);
@@ -71,15 +135,10 @@ function renderCards(container) {
               </div>
               <span class="exp-progress__label">${pct}% completado</span>
             </div>
-            <div class="exp-card__docs">
-              ${tiposEsperados.map(t => {
-                const hasDoc = docs.some(d => d.tipo === t.key);
-                return `<span class="exp-card__chip ${hasDoc ? 'exp-card__chip--ok' : ''}">${t.icon} ${hasDoc ? '\u2713' : '\u2014'}</span>`;
-              }).join('')}
-            </div>
           </div>`;
       }).join('')}
-    </div>`;
+    </div>
+  `;
 
   container.querySelectorAll('.exp-card').forEach(card => {
     card.addEventListener('click', () => {
@@ -88,14 +147,17 @@ function renderCards(container) {
       renderExpedientes();
     });
   });
+
+  document.getElementById('exp-search')?.addEventListener('input', () => renderDashboard(container));
+  document.getElementById('exp-filter-localidad')?.addEventListener('change', () => renderDashboard(container));
 }
 
 function renderDetail(container) {
   const emp = store.getEmpleadoById(selectedEmpleadoId);
   if (!emp) {
-    currentView = 'cards';
+    currentView = 'dashboard';
     selectedEmpleadoId = null;
-    return renderCards(container);
+    return renderDashboard(container);
   }
 
   const documentos = (Array.isArray(store.state.documentos) ? store.state.documentos : [])
@@ -104,7 +166,7 @@ function renderDetail(container) {
   container.innerHTML = `
     <button class="btn btn--ghost exp-back" id="exp-btn-back">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      Volver a Expedientes
+      Volver al Resumen
     </button>
 
     <div class="exp-detail-header">
@@ -174,7 +236,7 @@ function renderDetail(container) {
   `;
 
   document.getElementById('exp-btn-back')?.addEventListener('click', () => {
-    currentView = 'cards';
+    currentView = 'dashboard';
     selectedEmpleadoId = null;
     renderExpedientes();
   });
@@ -392,10 +454,6 @@ async function doUpload() {
 }
 
 export function initExpedientes() {
-  document.getElementById('exp-filter-localidad')?.addEventListener('change', () => {
-    if (store.state.ui.currentView === 'expedientes' && currentView === 'cards') renderExpedientes();
-  });
-
   pubsub.on(EVENT.DOCUMENTS_UPDATED, () => {
     if (store.state.ui.currentView === 'expedientes') renderExpedientes();
   });
