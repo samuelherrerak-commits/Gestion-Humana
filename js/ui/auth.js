@@ -25,7 +25,7 @@ export function checkAuth() {
 
 export function logout() {
   api.setToken(null);
-  localStorage.removeItem('sistema-rrhh-state');
+  sessionStorage.removeItem('sistema-rrhh-state');
   overlay.style.display = 'flex';
   showEmpleadoTab();
   loginError.textContent = '';

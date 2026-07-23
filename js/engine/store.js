@@ -31,18 +31,18 @@ function saveToStorage(state) {
       fideicomisoSolicitudes: state.fideicomisoSolicitudes,
       ui: state.ui
     };
-    localStorage.setItem(STORE_KEY, JSON.stringify(toSave));
+    sessionStorage.setItem(STORE_KEY, JSON.stringify(toSave));
   } catch (e) {
-    console.warn('[Store] localStorage error:', e);
+    console.warn('[Store] sessionStorage error:', e);
   }
 }
 
 function loadFromStorage() {
   try {
-    const raw = localStorage.getItem(STORE_KEY);
+    const raw = sessionStorage.getItem(STORE_KEY);
     if (raw) return JSON.parse(raw);
   } catch (e) {
-    console.warn('[Store] localStorage read error:', e);
+    console.warn('[Store] sessionStorage read error:', e);
   }
   return null;
 }

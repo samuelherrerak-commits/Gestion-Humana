@@ -1,12 +1,12 @@
 const API_BASE = '';
 
 function getToken() {
-  return localStorage.getItem('auth_token');
+  return sessionStorage.getItem('auth_token');
 }
 
 function setToken(token) {
-  if (token) localStorage.setItem('auth_token', token);
-  else localStorage.removeItem('auth_token');
+  if (token) sessionStorage.setItem('auth_token', token);
+  else sessionStorage.removeItem('auth_token');
 }
 
 async function request(method, path, body) {
@@ -37,7 +37,7 @@ export const api = {
   getDocumentos: (empleadoId) => request('GET', `/api/documentos${empleadoId ? '?empleado_id=' + empleadoId : ''}`),
   createDocumento: (data) => request('POST', '/api/documentos', data),
   uploadDocumento: async (formData) => {
-    const token = localStorage.getItem('sistema-rrhh-token');
+    const token = getToken();
     const res = await fetch(`${API_BASE}/api/upload`, {
       method: 'POST',
       headers: token ? { Authorization: `Bearer ${token}` } : {},
